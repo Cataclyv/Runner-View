@@ -20,7 +20,8 @@ SOURCES += main.cpp \
     Obstacle.cpp \
     Score.cpp \
     View.cpp \
-    GraphicElement.cpp
+    GraphicElement.cpp \
+    SlidingBackground.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -38,5 +39,6 @@ HEADERS += \
     Obstacle.h \
     Score.h \
     View.h \
-    GraphicElement.h
+    GraphicElement.h \
+    SlidingBackground.h
 

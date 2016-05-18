@@ -34,7 +34,7 @@ void View::genererView() {
 
         g_balle = new GraphicElement(balleTexture, _model->getBalleX(), _model->getBalleY(), 20, 20);
 
-        /*\ Redimensionne l'image de la balle \*/
+        /*** Redimensionne l'image de la balle ***/
         sf::FloatRect bb = g_balle->getLocalBounds();
         float width_factor = 100/bb.width;
         float height_factor = 100/bb.height;
@@ -58,8 +58,8 @@ void View::setModel(Model * model){
 void View::draw(){
     _window->clear();
 
-    _backGroundAvant->draw(_window);
     _backGroundArriere->draw(_window);
+    _backGroundAvant->draw(_window);
     g_balle->draw(_window);
 
     for(auto element : _movableToGraphic) {
@@ -86,10 +86,15 @@ bool View::treatEvents(){
             if (event.type == sf::Event::KeyPressed)
             {
                 if(event.key.code == sf::Keyboard::Left) {
-
+                    _model->deplacerBalle(true);
                 }
                 else if(event.key.code == sf::Keyboard::Right) {
-
+                    _model->deplacerBalle(false);
+                }
+            }
+            if(event.type == sf::Event::KeyReleased) {
+                if(event.key.code == sf::Keyboard::Left || event.key.code == sf::Keyboard::Right) {
+                    _model->stopperBalle();
                 }
             }
         }

@@ -15,8 +15,8 @@ const int VIEW_WIDTH = 800;
 const int VIEW_HEIGHT = 600;
 
 const std::string IMG_BALLE = "img/ball.png";
-const std::string IMG_BACKGROUND_FRONT = "img/city_2.png";
-const std::string IMG_BACKGROUND_BACK = "img/city_1.png";
+const std::string IMG_BACKGROUND_FRONT = "img/city_1.png";
+const std::string IMG_BACKGROUND_BACK = "img/city_2.png";
 
 class View
 {

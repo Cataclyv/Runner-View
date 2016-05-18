@@ -121,11 +121,10 @@ bool Model::nextStep() {
 
 void Model::deplacerBalle(bool aGauche) {
     if(aGauche)
-        _balle->setDx(-1);
+        _balle->setDx(-VITESSE_BALLE);
     else
-        _balle->setDx(1);
+        _balle->setDx(VITESSE_BALLE);
     _balle->move();
-    _balle->setDx(0);
 }
 
 int Model::getBalleX() const
@@ -136,6 +135,11 @@ int Model::getBalleX() const
 int Model::getBalleY() const
 {
     return _balle->getY();
+}
+
+void Model::stopperBalle()
+{
+    _balle->setDx(0);
 }
 
 bool Model::contientBalle(Chunk *e) const

@@ -10,6 +10,7 @@ const int MODEL_WIDTH = 800;
 const int MODEL_HEIGHT = 600;
 const int HAUTEUR_SAUT = 100;
 const int NB_CHUNKS = 10;
+const int VITESSE_BALLE = 10;
 
 class Model
 {
@@ -32,6 +33,7 @@ public:
 
     int getBalleX() const;
     int getBalleY() const;
+    void stopperBalle();
 
     bool contientBalle(Chunk *c) const; // Renvoie si le chunk en paramètre contient la balle
 };

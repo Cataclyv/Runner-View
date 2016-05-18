@@ -17,6 +17,7 @@ const int VIEW_HEIGHT = 600;
 const std::string IMG_BALLE = "img/ball.png";
 const std::string IMG_BACKGROUND_FRONT = "img/city_1.png";
 const std::string IMG_BACKGROUND_BACK = "img/city_2.png";
+const std::string IMG_OBSTACLE = "img/ball.png";
 
 class View
 {
@@ -29,11 +30,13 @@ private :
     sf::Texture backGroundFrontTexture;
     sf::Texture backGroundBackTexture;
     sf::Texture balleTexture;
+    sf::Texture obstacleTexture;
 
     SlidingBackground *_backGroundAvant, *_backGroundArriere;
-    GraphicElement *g_balle;
+    GraphicElement *_balleGraphique;
+    GraphicElement *_obstacleGraphique;
 
-    std::map<const MovableElement*, GraphicElement*> _movableToGraphic;
+    //std::map<const MovableElement*, GraphicElement*> _movableToGraphic;
 
 public:
     View();

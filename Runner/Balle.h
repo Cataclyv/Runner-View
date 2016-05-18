@@ -17,6 +17,8 @@ public:
     Balle();
     virtual ~Balle();
 
+    void move() override;
+
     int getPv() const;
     bool getEnSaut() const;
 

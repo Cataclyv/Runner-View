@@ -17,7 +17,7 @@ public:
     MovableElement(int x, int y, int w, int h, int dx, int dy);
 
     virtual ~MovableElement();
-    void move();
+    virtual void move();
 
     int getX() const;
     int getY() const;

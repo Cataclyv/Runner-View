@@ -9,6 +9,16 @@ Balle::~Balle() {
 
 }
 
+void Balle::move()
+{
+    bool deplacable = true;
+    if((_x-_dx < 20 && _dx < 0) || (_x+_w+_dx > 710 && _dx > 0))
+        deplacable = false;
+    if(deplacable)
+        _x += _dx;
+    _y += _dy;
+}
+
 int Balle::getPv() const {
     return _pv;
 }

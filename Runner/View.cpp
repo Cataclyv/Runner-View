@@ -5,6 +5,7 @@ using namespace std;
 View::View() : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}
 {
     _window = new sf::RenderWindow(sf::VideoMode(_w, _h, 32), "Runner", sf::Style::Close);
+    _window->setKeyRepeatEnabled(true);
 }
 
 void View::genererView() {
@@ -25,28 +26,43 @@ void View::genererView() {
     }
 
     /*** CREATION DE LA BALLE ***/
-
     if(!balleTexture.loadFromFile(IMG_BALLE))
         imageErreur(IMG_BALLE);
-
     else {
         imageTrouvee(IMG_BALLE);
-
-        g_balle = new GraphicElement(balleTexture, _model->getBalleX(), _model->getBalleY(), 20, 20);
+        _balleGraphique = new GraphicElement(balleTexture, _model->getBalleX(), _model->getBalleY(), 20, 20);
 
         /*** Redimensionne l'image de la balle ***/
-        sf::FloatRect bb = g_balle->getLocalBounds();
+        sf::FloatRect bb = _balleGraphique->getLocalBounds();
         float width_factor = 100/bb.width;
         float height_factor = 100/bb.height;
-        g_balle->setScale(width_factor, height_factor);
+        _balleGraphique->setScale(width_factor, height_factor);
     }
+
+    /*** CREATION SPRITE OBSTACLE ***/
+    if(!obstacleTexture.loadFromFile(IMG_OBSTACLE)) {
+        imageErreur(IMG_OBSTACLE);
+    }
+    else {
+        imageTrouvee(IMG_OBSTACLE);
+        _obstacleGraphique = new GraphicElement(obstacleTexture, 0, 0, 10, 10);
+
+        /*** Redimensionne l'image de l'obstacle ***/
+        sf::FloatRect frO = _balleGraphique->getLocalBounds();
+        float width_factor_O = 100/frO.width;
+        float height_factor_O = 100/frO.height;
+        _obstacleGraphique->setScale(width_factor_O, height_factor_O);
+    }
+
 }
 
 View::~View(){
-    if(g_balle != NULL)
-        delete g_balle;
-    for(auto element : _movableToGraphic)
-        delete element.second;
+    if(_balleGraphique != NULL)
+        delete _balleGraphique;
+    if(_backGroundArriere != NULL)
+        delete _backGroundArriere;
+    if(_backGroundAvant != NULL)
+        delete _backGroundAvant;
     if(_window!= NULL)
         delete _window;
 }
@@ -60,10 +76,16 @@ void View::draw(){
 
     _backGroundArriere->draw(_window);
     _backGroundAvant->draw(_window);
-    g_balle->draw(_window);
+    _balleGraphique->draw(_window);
 
-    for(auto element : _movableToGraphic) {
-        element.second->draw(_window);
+    for(auto chunk : _model->recupererChunks()) {
+        for(int i=0 ; i<chunk->taille() ; i++) {
+            if(chunk->getType(i) == "Obstacle") {
+                _obstacleGraphique->setPosition(chunk[i].getX(), chunk[i].getY());
+                //_obstacleGraphique->setTextureRect(chunk[i].getW(), chunk[i].getH());
+                _obstacleGraphique->draw(_window);
+            }
+        }
     }
 
     _window->display();
@@ -77,7 +99,6 @@ bool View::treatEvents(){
         sf::Event event;
         while (_window->pollEvent(event)) {
             //cout << "Event detected" << endl;
-
             if ((event.type == sf::Event::Closed) ||
                     ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))) {
                 _window->close();
@@ -90,6 +111,9 @@ bool View::treatEvents(){
                 }
                 else if(event.key.code == sf::Keyboard::Right) {
                     _model->deplacerBalle(false);
+                }
+                else if(event.key.code == sf::Keyboard::Up) {
+
                 }
             }
             if(event.type == sf::Event::KeyReleased) {
@@ -104,10 +128,7 @@ bool View::treatEvents(){
 
 void View::synchronize()
 {
-    g_balle->setPosition(_model->getBalleX(), _model->getBalleY());
-    for(auto element : _movableToGraphic) {
-        element.second->setPosition(element.first->getX(), element.first->getY());
-    }
+    _balleGraphique->setPosition(_model->getBalleX(), _model->getBalleY());
 }
 
 void View::imageTrouvee(string chemin)

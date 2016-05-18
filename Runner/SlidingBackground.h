@@ -6,7 +6,7 @@
 class SlidingBackground
 {
 private :
-    GraphicElement _left, _right;
+    GraphicElement _gauche, _droite;
     int _w, _h;
     unsigned int _vitesse;
 public:

@@ -41,7 +41,7 @@ Chunk::Chunk(int x, int type)
         int type_o = 0;
         for(unsigned int i=0; i<_conteneur.size() ; i++)
         {
-            type_o = rand()%3;
+            type_o = rand()%2;
             switch(type_o)
             {
             case 0 :
@@ -56,7 +56,8 @@ Chunk::Chunk(int x, int type)
                     _conteneur[i] = new Obstacle(_x+TAILLE*i, _y, TAILLE, 2*TAILLE, -1, 0);
                 }
                 break;
-            case 2 :
+            default :
+                _conteneur[i] = nullptr;
                 std::cout << "Pas d'obstacle à (" << _x+TAILLE*i << ", " << _y << ")" << std::endl;
                 break;
             }
@@ -72,8 +73,9 @@ Chunk::Chunk(int x, int type)
 
 void Chunk::move() {
     _x += _dx;
-    for(auto e : _conteneur)
-        e->move();
+    int max = _conteneur.size();
+    for(int i=0 ; i < max ; i++)
+        _conteneur[i]->move();
 }
 
 // Détecte s'il y a collision entre la balle et un des éléments du chunk
@@ -91,4 +93,14 @@ bool Chunk::collision(Balle *_balle) const {
 
 std::string Chunk::objetTouche() const {
     return _conteneur[0]->getType();
+}
+
+int Chunk::taille() const
+{
+    return _conteneur.size();
+}
+
+std::string Chunk::getType(int index) const
+{
+    return _conteneur[index]->getType();
 }

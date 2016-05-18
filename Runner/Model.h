@@ -17,7 +17,7 @@ class Model
 private :
     int _w, _h;
     Balle *_balle;
-    std::vector<Chunk*> _elements;
+    std::vector<Chunk*> _chunks;
     Score *_scoreJoueur;
     int _degatsObstacle;
 
@@ -28,12 +28,16 @@ public:
     void remplirModel();    // A exécuter au lancement du jeu
     void ajouterChunk(int x);
     void ajouterChunk(int x, char type);    // Réservée aux tests
+    std::vector<Chunk*> recupererChunks();
+
     bool nextStep();
+
     void deplacerBalle(bool aGauche);
+    void stopperBalle();
+    void sautBalle();
 
     int getBalleX() const;
     int getBalleY() const;
-    void stopperBalle();
 
     bool contientBalle(Chunk *c) const; // Renvoie si le chunk en paramètre contient la balle
 };

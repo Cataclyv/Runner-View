@@ -40,6 +40,5 @@ HEADERS += \
     Score.h \
     View.h \
     GraphicElement.h \
-    SlidingBackground.h \
-    MyClock.h
+    SlidingBackground.h
 

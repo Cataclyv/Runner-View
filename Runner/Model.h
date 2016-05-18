@@ -6,11 +6,13 @@
 #include "Chunk.h"
 #include <vector>
 
-const int MODEL_WIDTH = 800;
-const int MODEL_HEIGHT = 600;
+const int LARGEUR_MODEL = 800;
+const int HAUTEUR_MODEL = 600;
 const int HAUTEUR_SAUT = 100;
 const int NB_CHUNKS = 10;
 const int VITESSE_BALLE = 10;
+const int LARGEUR_CHUNK = 100;
+const int ECART = 20;
 
 class Model
 {

@@ -2,7 +2,7 @@
 #include <cstdlib>
 
 Chunk::Chunk(int x, int type)
-    : MovableElement{x, 10, 100, 100, -1, 0}
+    : MovableElement{x, 550, 100, 100, -1, 0}
 {
     _conteneur.resize(5);
     for(unsigned int j=0 ; j<_conteneur.size() ; j++)
@@ -11,7 +11,6 @@ Chunk::Chunk(int x, int type)
 
     switch(type)
     {
-
     case 1 : {  // Insertion et déterminisation des bonus
         int emplacement_bonus = rand()%5;
         int type_bonus = rand()%3;
@@ -35,7 +34,7 @@ Chunk::Chunk(int x, int type)
             if(_conteneur[i] == nullptr)
                 _conteneur[i] = new Piece(_x+TAILLE*i);
         }
-         } break;
+    } break;
 
     case 2 : {  // Insertion et déterminisation des obstacles
         int type_o = 0;
@@ -62,11 +61,7 @@ Chunk::Chunk(int x, int type)
                 break;
             }
         }
-        } break;
-
-    default : {
-
-        } break;
+    } break;
     }
     std::cout << std::endl;
 }
@@ -80,14 +75,14 @@ void Chunk::move() {
 
 // Détecte s'il y a collision entre la balle et un des éléments du chunk
 bool Chunk::collision(Balle *_balle) const {
-    bool collision_detectee = false;
+    bool collision_detectee = false;/*
     for(auto e : _conteneur) {
         if((_balle->getX()+_balle->getW() > e->getX() && _balle->getX()+_balle->getW() < e->getX()+e->getW())
                 || (_balle->getX() > e->getX() && _balle->getX() < e->getX()+e->getW()))
         {
             collision_detectee = true;
         }
-    }
+    }*/
     return collision_detectee;
 }
 

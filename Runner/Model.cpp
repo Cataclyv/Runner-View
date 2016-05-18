@@ -1,6 +1,6 @@
 #include "Model.h"
 
-Model::Model() : _w{MODEL_WIDTH}, _h {MODEL_HEIGHT}, _degatsObstacle{25}
+Model::Model() : _w{LARGEUR_MODEL}, _h {HAUTEUR_MODEL}, _degatsObstacle{25}
 {
     _balle = new Balle();
     std::cout << "Balle crée aux coordonnées (" << _balle->getX() << ", " << _balle->getY() << ")" << std::endl << std::endl;
@@ -18,7 +18,7 @@ void Model::remplirModel() {
     int ecart = 20;
     for(int i=0 ; i<NB_CHUNKS ; i++)
     {
-        ajouterChunk(i*100+ecart);
+        ajouterChunk(i*LARGEUR_CHUNK + ECART);
     }
 }
 
@@ -29,8 +29,10 @@ void Model::ajouterChunk(int x) {
         _chunks.push_back(new Chunk(x, 2));
     else if(determination_chunk >= 70 && determination_chunk < 85)
         _chunks.push_back(new Chunk(x, 1));
+    /*
     else if(determination_chunk >= 85)
         _chunks.push_back(new Chunk(x, 0));
+        */
 }
 
 void Model::ajouterChunk(int x, char type) {
@@ -49,7 +51,6 @@ void Model::ajouterChunk(int x, char type) {
 
 std::vector<Chunk *> Model::recupererChunks()
 {
-    std::cout << "Il y a " << _chunks.size() << " chunks" << std::endl;
     return _chunks;
 }
 
@@ -66,7 +67,7 @@ bool Model::nextStep() {
 
         /*** Crée un nouveau Chunk quand il en manque ***/
         if(_chunks.size() < NB_CHUNKS) {
-            ajouterChunk(1020);
+            ajouterChunk(_chunks[_chunks.size()-1]->getX() + _chunks[_chunks.size()-1]->getW() + ECART);
         }
         e->move();
     }

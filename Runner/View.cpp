@@ -34,8 +34,8 @@ void View::genererView() {
 
         /*** Redimensionne l'image de la balle ***/
         sf::FloatRect bb = _balleGraphique->getLocalBounds();
-        float width_factor = 100/bb.width;
-        float height_factor = 100/bb.height;
+        float width_factor = 50/bb.width;
+        float height_factor = 50/bb.height;
         _balleGraphique->setScale(width_factor, height_factor);
     }
 

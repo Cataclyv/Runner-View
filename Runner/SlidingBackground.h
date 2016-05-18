@@ -11,6 +11,7 @@ private :
     unsigned int _vitesse;
 public:
     SlidingBackground(sf::Texture &image, int w, int h, unsigned int vitesse);
+    void setTexture(sf::Texture &image);
     void draw(sf::RenderWindow &window);
 };
 

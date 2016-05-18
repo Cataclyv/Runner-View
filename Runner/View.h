@@ -7,6 +7,7 @@
 #include "Model.h"
 #include "MovableElement.h"
 #include "GraphicElement.h"
+#include "SlidingBackground.h"
 
 #include <SFML/Graphics.hpp>
 
@@ -14,8 +15,8 @@ const int VIEW_WIDTH = 800;
 const int VIEW_HEIGHT = 600;
 
 const std::string IMG_BALLE = "../Runner/img/ball.png";
-const std::string IMG_BACKGROUND_1 = "../Runner/img/city_1.png";
-const std::string IMG_BACKGROUND_2 = "../Runner/img/city_2.png";
+const std::string IMG_BACKGROUND_FRONT = "../Runner/img/city_2.png";
+const std::string IMG_BACKGROUND_BACK = "../Runner/img/city_1.png";
 
 class View
 {
@@ -24,6 +25,7 @@ private :
     sf::RenderWindow *_window;
     Model *_model;
 
+    SlidingBackground *_backGroundAvant, *_backGroundArriere;
     GraphicElement *g_balle;
 
     std::map<const MovableElement*, GraphicElement*> _movableToGraphic;

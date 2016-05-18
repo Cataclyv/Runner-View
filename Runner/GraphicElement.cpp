@@ -9,3 +9,12 @@ GraphicElement::GraphicElement(sf::Texture &image, int x, int y, int w, int h)
 void GraphicElement::draw(sf::RenderWindow *window) {
     window->draw(*this);
 }
+
+int GraphicElement::getW() const {
+    return _w;
+}
+
+int GraphicElement::getH() const {
+    return _h;
+}
+

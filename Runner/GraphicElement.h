@@ -10,6 +10,9 @@ private :
 public:
     GraphicElement(sf::Texture &image, int x, int y, int w, int h);
     void draw(sf::RenderWindow *window);
+
+    int getW() const;
+    int getH() const;
 };
 
 #endif // GRAPHICELEMENT_H

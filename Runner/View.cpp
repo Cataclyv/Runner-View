@@ -6,22 +6,30 @@ View::View() : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}
 {
     _window = new sf::RenderWindow(sf::VideoMode(_w, _h, 32), "Runner", sf::Style::Close);
 
-    /*** CREATION DE LA BALLE ***/
-    sf::Texture _ballTexture;
+    sf::Texture backGroundFrontTexture;
+    if(!backGroundFrontTexture.loadFromFile(IMG_BACKGROUND_FRONT))
+        std::cerr << "ERREUR lors du chargement de l'image -> " << IMG_BACKGROUND_FRONT << std::endl;
+    else {
+        _backGroundAvant = new SlidingBackground(backGroundFrontTexture, VIEW_WIDTH, VIEW_HEIGHT, 1);
+        _backGroundAvant->setTexture(backGroundFrontTexture);
+    }
 
-    if(!_ballTexture.loadFromFile(IMG_BALLE))
+    sf::Texture backGroundBackTexture;
+
+    /*** CREATION DE LA BALLE ***/
+    sf::Texture balleTexture;
+
+    if(!balleTexture.loadFromFile(IMG_BALLE))
         std::cerr << "ERREUR lors du chargement de l'image -> " << IMG_BALLE << std::endl;
 
     else {
-        g_balle = new GraphicElement(_ballTexture, 10, 10, 20, 20);
+        g_balle = new GraphicElement(balleTexture, 10, 10, 20, 20);
 
         /*\ Redimensionne l'image de la balle \*/
         sf::FloatRect bb = g_balle->getLocalBounds();
         float width_factor = 100/bb.width;
         float height_factor = 100/bb.height;
         g_balle->setScale(width_factor, height_factor);
-
-
     }
 }
 

@@ -6,24 +6,41 @@ View::View() : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}
 {
     _window = new sf::RenderWindow(sf::VideoMode(_w, _h, 32), "Runner", sf::Style::Close);
 
+    /*** SLIDINGBACKGROUND AVANT ***/
     sf::Texture backGroundFrontTexture;
     if(!backGroundFrontTexture.loadFromFile(IMG_BACKGROUND_FRONT))
-        std::cerr << "ERREUR lors du chargement de l'image -> " << IMG_BACKGROUND_FRONT << std::endl;
+        erreurImage(IMG_BACKGROUND_FRONT);
     else {
+        imageTrouvee(IMG_BACKGROUND_FRONT);
         _backGroundAvant = new SlidingBackground(backGroundFrontTexture, VIEW_WIDTH, VIEW_HEIGHT, 1);
         _backGroundAvant->setTexture(backGroundFrontTexture);
     }
 
+    /*** SLIDINGBACKGROUND ARRIERE ***/
     sf::Texture backGroundBackTexture;
+    if(!backGroundBackTexture.loadFromFile(IMG_BACKGROUND_BACK))
+        erreurImage(IMG_BACKGROUND_BACK);
+    else {
+        imageTrouvee(IMG_BACKGROUND_BACK);
+        _backGroundAvant = new SlidingBackground(backGroundBackTexture, VIEW_WIDTH, VIEW_HEIGHT, 1);
+        _backGroundAvant->setTexture(backGroundBackTexture);
+    }
 
     /*** CREATION DE LA BALLE ***/
     sf::Texture balleTexture;
 
     if(!balleTexture.loadFromFile(IMG_BALLE))
-        std::cerr << "ERREUR lors du chargement de l'image -> " << IMG_BALLE << std::endl;
+        erreurImage(IMG_BALLE);
 
     else {
-        g_balle = new GraphicElement(balleTexture, 10, 10, 20, 20);
+        imageTrouvee(IMG_BALLE);
+
+        int x = 15;
+        int y = 15;
+        _model->positionBalle(x, y);
+        cout << x << " / " << y << endl;
+
+        g_balle = new GraphicElement(balleTexture, x, y, 20, 20);
 
         /*\ Redimensionne l'image de la balle \*/
         sf::FloatRect bb = g_balle->getLocalBounds();
@@ -94,4 +111,14 @@ void View::synchronize()
     for(auto element : _movableToGraphic) {
         element.second->setPosition(element.first->getX(), element.first->getY());
     }
+}
+
+void View::imageTrouvee(string chemin)
+{
+    cerr << chemin << " -> chargée" << endl;
+}
+
+void View::erreurImage(string chemin)
+{
+    cerr << "ERREUR lors du chargement de l'image -> " << chemin << std::endl;
 }

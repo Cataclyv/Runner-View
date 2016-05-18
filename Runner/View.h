@@ -38,6 +38,10 @@ public:
     void draw();
     bool treatEvents();
     void synchronize();
+
+    /* FONCTIONS D'AFFICHAGE TERMINAL */
+    void erreurImage(std::string chemin);
+    void imageTrouvee(std::string chemin);
 };
 
 #endif // VIEW_H

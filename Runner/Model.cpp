@@ -3,6 +3,7 @@
 Model::Model() : _w{MODEL_WIDTH}, _h {MODEL_HEIGHT}, _degatsObstacle{25}
 {
     _balle = new Balle();
+    std::cout << "Balle crée aux coordonnées (" << _balle->getX() << ", " << _balle->getY() << ")" << std::endl;
     _scoreJoueur = new Score();
 }
 
@@ -105,8 +106,6 @@ bool Model::nextStep() {
         }
     }
 
-    std::cout << std::endl;
-
     if(_balle->getPv() <= 0) {
         std::cout << "Mort du joueur" << std::endl;
         return false;
@@ -123,9 +122,9 @@ void Model::deplacerBalle(bool aGauche) {
     _balle->setDx(0);
 }
 
-void Model::positionBalle(int &x, int &y) {
-    x = _balle->getX();
-    y = _balle->getY();
+void Model::positionBalle(int &posX, int &posY) {
+    posX = _balle->getX();
+    posY = _balle->getY();
 }
 
 bool Model::contientBalle(Chunk *e) const

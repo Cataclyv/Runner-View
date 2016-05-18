@@ -11,7 +11,8 @@ MovableElement::~MovableElement() {
 
 void MovableElement::move()
 {
-
+    _x += _dx;
+    _y += _dy;
 }
 
 int MovableElement::getX() const

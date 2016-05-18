@@ -1,17 +1,12 @@
 #include "Balle.h"
 
 Balle::Balle()
-    : MovableElement{10, 10, W_BALLE, H_BALLE, 1, 0}, _pv{PV_MAX}, _enSaut{false}
+    : MovableElement{10, 450, W_BALLE, H_BALLE, 0, 0}, _pv{PV_MAX}, _enSaut{false}
 {
 }
 
 Balle::~Balle() {
 
-}
-
-void Balle::move() {
-    _x += _dy;
-    _y += _dy;
 }
 
 int Balle::getPv() const {

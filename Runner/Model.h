@@ -29,7 +29,9 @@ public:
     void ajouterChunk(int x, char type);    // Réservée aux tests
     bool nextStep();
     void deplacerBalle(bool aGauche);
-    void positionBalle(int &x, int &y);
+
+    int getBalleX() const;
+    int getBalleY() const;
 
     bool contientBalle(Chunk *c) const; // Renvoie si le chunk en paramètre contient la balle
 };

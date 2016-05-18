@@ -50,15 +50,19 @@ bool Model::nextStep() {
 
     for(auto e : _elements) {
 
-        if(!e->enJeu()) //si le MovableElement sort du jeu
+        /*** Si le MovableElement sort du jeu ***/
+        if(!e->enJeu()) {
             _elements.pop_back();
+            _scoreJoueur->plusChunk();
+        }
 
-        if(_elements.size() < NB_CHUNKS) {  // crée un nouveau Chunk quand il en manque
+        /*** Crée un nouveau Chunk quand il en manque ***/
+        if(_elements.size() < NB_CHUNKS) {
             ajouterChunk(1020);
         }
         e->move();
     }
-
+/*
     if(_balle->getEnSaut() && _balle->getY() < HAUTEUR_SAUT)
     {
         _balle->setDy(1);
@@ -68,10 +72,11 @@ bool Model::nextStep() {
     else if(!_balle->getEnSaut() && _balle->getY() > 10)
     {
         _balle->setDy(-1);
-    }
+    }*/
     _balle->move();
 
-    // Détection collision-objet
+
+    /*** Détection collision-objet ***/
     for(auto e : _elements) {
         if(contientBalle(e) && e->collision(_balle)) {
 
@@ -106,6 +111,7 @@ bool Model::nextStep() {
         }
     }
 
+    /*** Détection mort du joueur ***/
     if(_balle->getPv() <= 0) {
         std::cout << "Mort du joueur" << std::endl;
         return false;
@@ -122,9 +128,14 @@ void Model::deplacerBalle(bool aGauche) {
     _balle->setDx(0);
 }
 
-void Model::positionBalle(int &posX, int &posY) {
-    posX = _balle->getX();
-    posY = _balle->getY();
+int Model::getBalleX() const
+{
+    return _balle->getX();
+}
+
+int Model::getBalleY() const
+{
+    return _balle->getY();
 }
 
 bool Model::contientBalle(Chunk *e) const

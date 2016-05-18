@@ -7,6 +7,8 @@
 class MovableElement
 {
 protected :
+    int _id;
+    static int _nbME;
     int _x, _y;
     int _w, _h;
     int _dx, _dy;

@@ -8,9 +8,10 @@ using namespace std;
 int main()
 {
     srand(time(NULL));
-    Model _model;
     View _view;
+    Model _model;
     _view.setModel(&_model);
+    _view.genererView();
 
     while(_view.treatEvents()){
       _model.nextStep();

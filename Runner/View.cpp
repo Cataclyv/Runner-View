@@ -49,8 +49,8 @@ void View::genererView() {
 
         /*** Redimensionne l'image de l'obstacle ***/
         sf::FloatRect frO = _balleGraphique->getLocalBounds();
-        float width_factor_O = 100/frO.width;
-        float height_factor_O = 100/frO.height;
+        float width_factor_O = 40/frO.width;
+        float height_factor_O = 40/frO.height;
         _obstacleGraphique->setScale(width_factor_O, height_factor_O);
     }
 
@@ -78,13 +78,10 @@ void View::draw(){
     _backGroundAvant->draw(_window);
     _balleGraphique->draw(_window);
 
-    for(auto chunk : _model->recupererChunks()) {
-        for(int i=0 ; i<chunk->taille() ; i++) {
-            if(chunk->getType(i) == "Obstacle") {
-                _obstacleGraphique->setPosition(chunk[i].getX(), chunk[i].getY());
-                //_obstacleGraphique->setTextureRect(chunk[i].getW(), chunk[i].getH());
-                _obstacleGraphique->draw(_window);
-            }
+    for(auto element : _model->recupererElements()) {
+        if(element->getType() == "Obstacle") {
+            _obstacleGraphique->setPosition(element->getX(), element->getY());
+            _obstacleGraphique->draw(_window);
         }
     }
 

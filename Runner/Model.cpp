@@ -1,76 +1,55 @@
 #include "Model.h"
 
-Model::Model() : _w{LARGEUR_MODEL}, _h {HAUTEUR_MODEL}, _degatsObstacle{25}
+Model::Model() : _ecart{50}, _w{LARGEUR_MODEL}, _h {HAUTEUR_MODEL}, _degatsObstacle{25}
 {
     _balle = new Balle();
     std::cout << "Balle crée aux coordonnées (" << _balle->getX() << ", " << _balle->getY() << ")" << std::endl << std::endl;
     _scoreJoueur = new Score();
-    remplirModel();
+
+    /*** REMPLISSAGE MODELE ***/
+    for(int i=0 ; i<MAX_ELEMENTS ; i++) {
+        _ecart = rand()%200 + ECART_MIN;
+        ajouterElementAleatoire(_w+i*_ecart);
+    }
 }
 
 Model::~Model() {
     delete _balle;
-    for(Chunk* c : _chunks)
-        delete c;
+    for(MovableElement* e : _elements)
+        delete e;
 }
 
-void Model::remplirModel() {
-    int ecart = 20;
-    for(int i=0 ; i<NB_CHUNKS ; i++)
-    {
-        ajouterChunk(i*LARGEUR_CHUNK + ECART);
-    }
-}
-
-void Model::ajouterChunk(int x) {
-    srand(time(NULL));
-    int determination_chunk = rand()%100;
-    if(determination_chunk < 70)
-        _chunks.push_back(new Chunk(x, 2));
-    else if(determination_chunk >= 70 && determination_chunk < 85)
-        _chunks.push_back(new Chunk(x, 1));
-    /*
-    else if(determination_chunk >= 85)
-        _chunks.push_back(new Chunk(x, 0));
-        */
-}
-
-void Model::ajouterChunk(int x, char type) {
-    switch(type) {
-    case 'v' :
-        _chunks.push_back(new Chunk(x, 0));
-        break;
-    case 'o' :
-        _chunks.push_back(new Chunk(x, 2));
-        break;
-    case 'b' :
-         _chunks.push_back(new Chunk(x, 1));
-        break;
-    }
-}
-
-std::vector<Chunk *> Model::recupererChunks()
+void Model::ajouterElementAleatoire(int xCourant)
 {
-    return _chunks;
+    srand(time(NULL));
+    int determination_element = rand()%100;
+    if(determination_element < 70)
+        _elements.insert(new Obstacle(xCourant, 450, 40, 40, -1, 0));
+    else if(determination_element >= 70 && determination_element < 85) {
+        int determination_bonus = rand()%100;
+        if(determination_bonus < 90)
+            _elements.insert(new Piece(xCourant));
+        else
+            _elements.insert(new Medikit(xCourant));
+    }
 }
-
     // Quand le jeu sera Game Over, retourne FALSE
 bool Model::nextStep() {
 
-    for(auto e : _chunks) {
+    int elementSupprime = false;
+    for(auto e : _elements) {
 
         /*** Si le MovableElement sort du jeu ***/
         if(!e->enJeu()) {
-            _chunks.pop_back();
-            _scoreJoueur->plusChunk();
-        }
-
-        /*** Crée un nouveau Chunk quand il en manque ***/
-        if(_chunks.size() < NB_CHUNKS) {
-            ajouterChunk(_chunks[_chunks.size()-1]->getX() + _chunks[_chunks.size()-1]->getW() + ECART);
+            //_chunks.pop_back();
+            _scoreJoueur->plusObstacle();
+            _elements.erase(e);
+            elementSupprime = true;
         }
         e->move();
     }
+    if(elementSupprime)
+        ajouterElementAleatoire(800);
 /*
     if(_balle->getEnSaut() && _balle->getY() < HAUTEUR_SAUT)
     {
@@ -84,20 +63,13 @@ bool Model::nextStep() {
     }*/
     _balle->move();
 
-
-    /*** Détection collision-objet ***/
-    for(auto e : _chunks) {
-        if(contientBalle(e) && e->collision(_balle)) {
-
-            std::string typeObjetTouche = e->objetTouche();
-
-            if(typeObjetTouche == "Obstacle") {
+    for(auto e : _elements) {
+        if(e->collision(_balle)) {
+            if(e->getType() == "Obstacle") {
                 _balle->setPv(_balle->getPv()-_degatsObstacle);
             }
-
             else {
-
-                if(typeObjetTouche == "Medikit") {
+                if(e->getType() == "Medikit") {
                     Medikit reference;
                     _balle->setPv(_balle->getPv() + reference.getSoins());
                     if(_balle->getPv() > PV_MAX)
@@ -105,16 +77,8 @@ bool Model::nextStep() {
                     _scoreJoueur->plusBonus();
                 }
 
-                else if(typeObjetTouche == "Piece") {
+                else if(e->getType() == "Piece") {
                     _scoreJoueur->plusPiece();
-                }
-
-                else if(typeObjetTouche == "Invincibilite") {
-                    _scoreJoueur->plusBonus();
-                }
-
-                else if(typeObjetTouche == "Vol") {
-                    _scoreJoueur->plusBonus();
                 }
             }
         }
@@ -146,6 +110,11 @@ int Model::getBalleY() const
     return _balle->getY();
 }
 
+std::set<MovableElement*> Model::recupererElements() const
+{
+    return _elements;
+}
+
 void Model::stopperBalle()
 {
     _balle->setDx(0);
@@ -154,15 +123,4 @@ void Model::stopperBalle()
 void Model::sautBalle()
 {
     _balle->setEnSaut(true);
-}
-
-bool Model::contientBalle(Chunk *e) const
-{
-    bool contient = false;
-    if((_balle->getX()+_balle->getW() > e->getX() && _balle->getX()+_balle->getW() < e->getX()+e->getW())
-            || (_balle->getX() > e->getX() && _balle->getX() < e->getX()+e->getW()))
-    {
-        contient = true;
-    }
-    return contient;
 }

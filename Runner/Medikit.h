@@ -13,7 +13,7 @@ public :
     Medikit();
     Medikit(int x);
 
-    int getSoins();
+    int getSoins() const;
     void setSoins(int montantSoins);
 
     virtual std::string getType() const;

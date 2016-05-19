@@ -19,7 +19,7 @@ void Score::plusBonus() {
     _nbBonus++;
 }
 
-void Score::plusChunk() {
+void Score::plusObstacle() {
     _nbChunks++;
 }
 

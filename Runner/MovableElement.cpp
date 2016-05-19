@@ -65,11 +65,16 @@ void MovableElement::setDy(int dy)
     _dy = dy;
 }
 
-bool MovableElement::enJeu()
+bool MovableElement::enJeu() const
 {
     if((_x+_w) < 0)
         return false;
     return true;
+}
+
+bool MovableElement::collision(MovableElement *element) const
+{
+    return false;
 }
 
 std::string MovableElement::getType() const {

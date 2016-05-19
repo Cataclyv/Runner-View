@@ -4,22 +4,23 @@
 #include "Balle.h"
 #include "Score.h"
 #include "Chunk.h"
-#include <vector>
+#include <set>
 
 const int LARGEUR_MODEL = 800;
 const int HAUTEUR_MODEL = 600;
 const int HAUTEUR_SAUT = 100;
 const int NB_CHUNKS = 10;
 const int VITESSE_BALLE = 10;
-const int LARGEUR_CHUNK = 100;
-const int ECART = 20;
+const int MAX_ELEMENTS = 20;
+const int ECART_MIN = 40;
 
 class Model
 {
 private :
+    int _ecart;
     int _w, _h;
     Balle *_balle;
-    std::vector<Chunk*> _chunks;
+    std::set<MovableElement*> _elements;
     Score *_scoreJoueur;
     int _degatsObstacle;
 
@@ -27,10 +28,7 @@ public:
     Model();
     ~Model();
 
-    void remplirModel();    // A exécuter au lancement du jeu
-    void ajouterChunk(int x);
-    void ajouterChunk(int x, char type);    // Réservée aux tests
-    std::vector<Chunk*> recupererChunks();
+    void ajouterElementAleatoire(int coefficient);
 
     bool nextStep();
 
@@ -41,7 +39,7 @@ public:
     int getBalleX() const;
     int getBalleY() const;
 
-    bool contientBalle(Chunk *c) const; // Renvoie si le chunk en paramètre contient la balle
+    std::set<MovableElement*> recupererElements() const;
 };
 
 #endif // MODEL_H

@@ -46,7 +46,7 @@ Chunk::Chunk(int x, int type)
             case 0 :
                 if(_conteneur[i] == nullptr)
                 {
-                    _conteneur[i] = new Obstacle(_x+TAILLE*i, _y, TAILLE, TAILLE, -1, 0);
+                    _conteneur[i] = new Obstacle(_x+TAILLE*i+ESPACE, _y, TAILLE, TAILLE, -1, 0);
                 }
                 break;
             case 1 :
@@ -64,6 +64,13 @@ Chunk::Chunk(int x, int type)
     } break;
     }
     std::cout << std::endl;
+}
+
+Chunk::~Chunk()
+{
+    for(auto element : _conteneur) {
+        delete element;
+    }
 }
 
 void Chunk::move() {

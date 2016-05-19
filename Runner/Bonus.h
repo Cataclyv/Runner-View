@@ -8,14 +8,13 @@
 const int VAL_PIECE = 10;
 const int VAL_BONUS = 50;
 const int VAL_CHUNK = 100;
-const int TAILLE = 20;
+const int TAILLE = 40;
 
 class Bonus : public MovableElement
 {
 protected:
     int _valPoints;
 public:
-    Bonus();
     Bonus(int x, int valeur);
 
     void move();

@@ -10,9 +10,8 @@ Medikit::Medikit(int x)
     std::cout << " -> Medikit" << std::endl;
 }
 
-int Medikit::getSoins()
-{
-    std::cout << _soins << std::endl;
+int Medikit::getSoins() const {
+    std::cout << "SOINS -> " <<_soins << " PV" << std::endl;
     return _soins;
 }
 

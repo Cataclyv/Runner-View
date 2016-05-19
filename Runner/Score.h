@@ -14,7 +14,7 @@ public:
 
     void plusPiece();
     void plusBonus();
-    void plusChunk();
+    void plusObstacle();
 
     std::string getPseudo();
     void setPseudo(std::string pseudo);

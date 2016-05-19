@@ -31,7 +31,8 @@ public:
     void setDx(int dx);
     void setDy(int dy);
 
-    bool enJeu();
+    bool enJeu() const;
+    bool collision(MovableElement *element) const;
 
     virtual std::string getType() const;
 };

@@ -110,7 +110,7 @@ bool View::treatEvents(){
                     _model->deplacerBalle(false);
                 }
                 else if(event.key.code == sf::Keyboard::Up) {
-
+                    _model->sautBalle();
                 }
             }
             if(event.type == sf::Event::KeyReleased) {

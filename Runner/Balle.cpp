@@ -1,8 +1,9 @@
 #include "Balle.h"
 
-Balle::Balle()
-    : MovableElement{10, 450, W_BALLE, H_BALLE, 0, 0}, _pv{PV_MAX}, _enSaut{false}
+Balle::Balle(int hauteur)
+    : MovableElement{10, 0, W_BALLE, H_BALLE, 0, 0}, _pv{PV_MAX}, _enSaut{false}, _enChute{false}
 {
+    _y = hauteur-_w;
 }
 
 Balle::~Balle() {
@@ -17,6 +18,7 @@ void Balle::move()
     if(deplacable)
         _x += _dx;
     _y += _dy;
+    //std::cout << "ballY -> " << _y << std::endl;
 }
 
 int Balle::getPv() const {
@@ -25,6 +27,11 @@ int Balle::getPv() const {
 
 bool Balle::getEnSaut() const {
     return _enSaut;
+}
+
+bool Balle::getEnChute() const
+{
+    return _enChute;
 }
 
 void Balle::setDx(int dx) {
@@ -37,4 +44,9 @@ void Balle::setPv(int pv) {
 
 void Balle::setEnSaut(bool saut) {
     _enSaut = saut;
+}
+
+void Balle::setEnChute(bool chute)
+{
+    _enChute = chute;
 }

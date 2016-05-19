@@ -4,7 +4,7 @@ using namespace std;
 
 Model::Model() : _ecart{50}, _vitesseJeu{2}, _w{LARGEUR_MODEL}, _h {HAUTEUR_MODEL}, _degatsObstacle{25}
 {
-    _balle = new Balle();
+    _balle = new Balle(HAUTEUR_SOL);
     std::cout << "Balle crée aux coordonnées (" << _balle->getX() << ", " << _balle->getY() << ")" << std::endl << std::endl;
     _scoreJoueur = new Score();
 
@@ -32,7 +32,7 @@ void Model::ajouterElementAleatoire(int xCourant)
 {
     int determination_element = rand()%100;
     if(determination_element < 70)
-        _elements.insert(new Obstacle(xCourant, 450, 40, 40, -_vitesseJeu, 0));
+        _elements.insert(new Obstacle(xCourant, HAUTEUR_SOL-TAILLE_ELEMENTS, TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0));
     else if(determination_element >= 70 && determination_element < 85) {
         int determination_bonus = rand()%100;
         if(determination_bonus < 90)
@@ -46,17 +46,15 @@ bool Model::nextStep() {
 
     int elementSupprime = false;
     for(auto e : _elements) {
-
         /*** Si le MovableElement sort du jeu ***/
         if(!e->enJeu()) {
-            //_chunks.pop_back();
             _scoreJoueur->plusObstacle();
             _elements.erase(e);
             elementSupprime = true;
         }
         e->move();
     }
-    if(elementSupprime)
+    if(elementSupprime) // Si un élément a été supprimé, en rajoute un nouveau
     {
         int nouvellePos =0;
         for(auto e : _elements) {
@@ -66,19 +64,10 @@ bool Model::nextStep() {
         calculerEcart();
         ajouterElementAleatoire(nouvellePos + _ecart);
     }
-/*
-    if(_balle->getEnSaut() && _balle->getY() < HAUTEUR_SAUT)
-    {
-        _balle->setDy(1);
-        if(_balle->getX() >= HAUTEUR_SAUT )
-            _balle->setEnSaut(false);
-    }
-    else if(!_balle->getEnSaut() && _balle->getY() > 10)
-    {
-        _balle->setDy(-1);
-    }*/
-    _balle->move();
 
+    bougerBalle();
+
+    /*** GESTION COLLISION ***/
     for(auto e : _elements) {
         if(e->collision(_balle)) {
             if(e->getType() == "Obstacle") {
@@ -131,6 +120,11 @@ int Model::getVitesseJeu() const
     return _vitesseJeu;
 }
 
+bool Model::balleAuSol() const
+{
+    return (_balle->getY() + _balle->getH() == HAUTEUR_SOL);
+}
+
 std::set<MovableElement*> Model::recupererElements() const
 {
     return _elements;
@@ -144,4 +138,27 @@ void Model::stopperBalle()
 void Model::sautBalle()
 {
     _balle->setEnSaut(true);
+}
+
+void Model::bougerBalle()
+{
+    if(_balle->getEnSaut() == true) {
+        if(_balle->getEnChute() == false) {
+            _balle->setDy(-10*_vitesseJeu);
+            if(_balle->getY() < HAUTEUR_SAUT) {
+                _balle->setEnChute(true);
+            }
+        }
+
+        else if(_balle->getEnChute() == true) {
+            _balle->setDy(10*_vitesseJeu);
+            if(_balle->getY() + _balle->getH() > HAUTEUR_SOL) {
+                _balle->setEnChute(false);
+                _balle->setEnSaut(false);
+                _balle->setDy(0);
+                _balle->setY(HAUTEUR_SOL-_balle->getH());
+            }
+        }
+    }
+    _balle->move();
 }

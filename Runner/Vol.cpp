@@ -1,7 +1,7 @@
 #include "Vol.h"
 
 Vol::Vol(int x)
-    : Bonus(x, VAL_BONUS), _duree(5)
+    : Bonus(x, 0, VAL_BONUS), _duree(5)
 {
     std::cout << " -> Vol" << std::endl;
 }

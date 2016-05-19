@@ -1,6 +1,6 @@
 #include "Piece.h"
 
-Piece::Piece(int x) : Bonus(x, VAL_PIECE)
+Piece::Piece(int x, int vitesse) : Bonus(x, vitesse, VAL_PIECE)
 {
     std::cout << " -> Piece" << std::endl;
 }

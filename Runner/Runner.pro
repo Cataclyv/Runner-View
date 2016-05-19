@@ -16,7 +16,6 @@ SOURCES += main.cpp \
     MovableElement.cpp \
     Piece.cpp \
     Vol.cpp \
-    Chunk.cpp \
     Obstacle.cpp \
     Score.cpp \
     View.cpp \
@@ -35,7 +34,6 @@ HEADERS += \
     MovableElement.h \
     Piece.h \
     Vol.h \
-    Chunk.h \
     Obstacle.h \
     Score.h \
     View.h \

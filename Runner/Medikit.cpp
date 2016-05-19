@@ -1,11 +1,11 @@
 #include "Medikit.h"
 
-Medikit::Medikit() : Bonus(-100, VAL_BONUS), _soins(25) {
+Medikit::Medikit() : Bonus(-100, 0, VAL_BONUS), _soins(25) {
 
 }
 
-Medikit::Medikit(int x)
-    : Bonus(x, VAL_BONUS), _soins(25)
+Medikit::Medikit(int x, int vitesse)
+    : Bonus(x, vitesse, VAL_BONUS), _soins(25)
 {
     std::cout << " -> Medikit" << std::endl;
 }

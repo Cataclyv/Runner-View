@@ -9,7 +9,7 @@ class Piece : public Bonus
 private:
 
 public:
-    Piece(int x);
+    Piece(int x, int vitesse);
 
     virtual std::string getType() const;
 };

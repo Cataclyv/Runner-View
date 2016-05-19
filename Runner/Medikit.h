@@ -11,7 +11,7 @@ private :
     int _soins;
 public :
     Medikit();
-    Medikit(int x);
+    Medikit(int x, int vitesse);
 
     int getSoins() const;
     void setSoins(int montantSoins);

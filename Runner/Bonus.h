@@ -15,7 +15,7 @@ class Bonus : public MovableElement
 protected:
     int _valPoints;
 public:
-    Bonus(int x, int valeur);
+    Bonus(int x, int vitesse, int valeur);
 
     void move();
 

@@ -14,7 +14,7 @@ void View::genererView() {
         imageErreur(IMG_BACKGROUND_FRONT);
     else {
         imageTrouvee(IMG_BACKGROUND_FRONT);
-        _backGroundAvant = new SlidingBackground(backGroundFrontTexture, VIEW_WIDTH, VIEW_HEIGHT, 2);
+        _backGroundAvant = new SlidingBackground(backGroundFrontTexture, VIEW_WIDTH, VIEW_HEIGHT, _model->getVitesseJeu()*2);
     }
 
     /*** SLIDINGBACKGROUND ARRIERE ***/
@@ -22,7 +22,7 @@ void View::genererView() {
         imageErreur(IMG_BACKGROUND_BACK);
     else {
         imageTrouvee(IMG_BACKGROUND_BACK);
-        _backGroundArriere = new SlidingBackground(backGroundBackTexture, VIEW_WIDTH, VIEW_HEIGHT, 1);
+        _backGroundArriere = new SlidingBackground(backGroundBackTexture, VIEW_WIDTH, VIEW_HEIGHT, _model->getVitesseJeu());
     }
 
     /*** CREATION DE LA BALLE ***/

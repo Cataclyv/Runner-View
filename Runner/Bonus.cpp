@@ -1,7 +1,7 @@
 #include "Bonus.h"
 
-Bonus::Bonus(int x, int valeur) :
-    MovableElement(x, 100, 0, 0, -1, 0), _valPoints(valeur)
+Bonus::Bonus(int x, int vitesse, int valeur) :
+    MovableElement(x, 100, 0, 0, vitesse, 0), _valPoints(valeur)
 {
     std::cout<< "Bonus créé aux coordonnées ("
              << _x << ", " << _y << ")";

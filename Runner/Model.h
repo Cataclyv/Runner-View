@@ -12,12 +12,14 @@ const int HAUTEUR_SAUT = 100;
 const int NB_CHUNKS = 10;
 const int VITESSE_BALLE = 10;
 const int MAX_ELEMENTS = 20;
+const int ECART_BORNE = 600;
 const int ECART_MIN = 40;
 
 class Model
 {
 private :
     int _ecart;
+    int _vitesseJeu;
     int _w, _h;
     Balle *_balle;
     std::set<MovableElement*> _elements;
@@ -28,6 +30,7 @@ public:
     Model();
     ~Model();
 
+    void calculerEcart();
     void ajouterElementAleatoire(int coefficient);
 
     bool nextStep();
@@ -38,6 +41,7 @@ public:
 
     int getBalleX() const;
     int getBalleY() const;
+    int getVitesseJeu() const;
 
     std::set<MovableElement*> recupererElements() const;
 };

@@ -1,6 +1,8 @@
 #include "Model.h"
 
-Model::Model() : _ecart{50}, _w{LARGEUR_MODEL}, _h {HAUTEUR_MODEL}, _degatsObstacle{25}
+using namespace std;
+
+Model::Model() : _ecart{50}, _vitesseJeu{2}, _w{LARGEUR_MODEL}, _h {HAUTEUR_MODEL}, _degatsObstacle{25}
 {
     _balle = new Balle();
     std::cout << "Balle crée aux coordonnées (" << _balle->getX() << ", " << _balle->getY() << ")" << std::endl << std::endl;
@@ -8,7 +10,7 @@ Model::Model() : _ecart{50}, _w{LARGEUR_MODEL}, _h {HAUTEUR_MODEL}, _degatsObsta
 
     /*** REMPLISSAGE MODELE ***/
     for(int i=0 ; i<MAX_ELEMENTS ; i++) {
-        _ecart = rand()%200 + ECART_MIN;
+        calculerEcart();
         ajouterElementAleatoire(_w+i*_ecart);
     }
 }
@@ -19,18 +21,24 @@ Model::~Model() {
         delete e;
 }
 
+void Model::calculerEcart()
+{
+    srand(time(NULL)+_ecart);
+    _ecart = rand()%ECART_BORNE + ECART_MIN;
+    cout << "ECART -> " << _ecart << endl;
+}
+
 void Model::ajouterElementAleatoire(int xCourant)
 {
-    srand(time(NULL));
     int determination_element = rand()%100;
     if(determination_element < 70)
-        _elements.insert(new Obstacle(xCourant, 450, 40, 40, -1, 0));
+        _elements.insert(new Obstacle(xCourant, 450, 40, 40, -_vitesseJeu, 0));
     else if(determination_element >= 70 && determination_element < 85) {
         int determination_bonus = rand()%100;
         if(determination_bonus < 90)
-            _elements.insert(new Piece(xCourant));
+            _elements.insert(new Piece(xCourant, -_vitesseJeu));
         else
-            _elements.insert(new Medikit(xCourant));
+            _elements.insert(new Medikit(xCourant, -_vitesseJeu));
     }
 }
     // Quand le jeu sera Game Over, retourne FALSE
@@ -49,7 +57,15 @@ bool Model::nextStep() {
         e->move();
     }
     if(elementSupprime)
-        ajouterElementAleatoire(800);
+    {
+        int nouvellePos =0;
+        for(auto e : _elements) {
+            if(e->getX() > nouvellePos)
+                nouvellePos = e->getX();
+        }
+        calculerEcart();
+        ajouterElementAleatoire(nouvellePos + _ecart);
+    }
 /*
     if(_balle->getEnSaut() && _balle->getY() < HAUTEUR_SAUT)
     {
@@ -108,6 +124,11 @@ int Model::getBalleX() const
 int Model::getBalleY() const
 {
     return _balle->getY();
+}
+
+int Model::getVitesseJeu() const
+{
+    return _vitesseJeu;
 }
 
 std::set<MovableElement*> Model::recupererElements() const

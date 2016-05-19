@@ -1,7 +1,7 @@
 #include "Invincibilite.h"
 
 Invincibilite::Invincibilite(int x)
-    : Bonus(x, VAL_BONUS), _duree(5)
+    : Bonus(x, 0, VAL_BONUS), _duree(5)
 {
     std::cout << " -> Invincibilite" << std::endl;
 }

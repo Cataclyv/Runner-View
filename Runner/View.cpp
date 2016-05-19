@@ -2,35 +2,38 @@
 
 using namespace std;
 
-View::View() : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}
+View::View(Model *model) : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}, _model{model}
 {
     _window = new sf::RenderWindow(sf::VideoMode(_w, _h, 32), "Runner", sf::Style::Close);
     _window->setKeyRepeatEnabled(true);
-}
 
-void View::genererView() {
+    _font.loadFromFile(FONT);
+    _texteScore.setFont(_font);
+    _texteScore.setString("SCORE : 0");
+    _texteScore.setPosition(700, 50);
+
     /*** SLIDINGBACKGROUND AVANT ***/
-    if(!backGroundFrontTexture.loadFromFile(IMG_BACKGROUND_FRONT))
+    if(!_textureBackGroundAvant.loadFromFile(IMG_BACKGROUND_FRONT))
         imageErreur(IMG_BACKGROUND_FRONT);
     else {
         imageTrouvee(IMG_BACKGROUND_FRONT);
-        _backGroundAvant = new SlidingBackground(backGroundFrontTexture, VIEW_WIDTH, VIEW_HEIGHT, _model->getVitesseJeu()*2);
+        _backGroundAvant = new SlidingBackground(_textureBackGroundAvant, VIEW_WIDTH, VIEW_HEIGHT, _model->getVitesseJeu()*2);
     }
 
     /*** SLIDINGBACKGROUND ARRIERE ***/
-    if(!backGroundBackTexture.loadFromFile(IMG_BACKGROUND_BACK))
+    if(!_textureBackGroundArriere.loadFromFile(IMG_BACKGROUND_BACK))
         imageErreur(IMG_BACKGROUND_BACK);
     else {
         imageTrouvee(IMG_BACKGROUND_BACK);
-        _backGroundArriere = new SlidingBackground(backGroundBackTexture, VIEW_WIDTH, VIEW_HEIGHT, _model->getVitesseJeu());
+        _backGroundArriere = new SlidingBackground(_textureBackGroundArriere, VIEW_WIDTH, VIEW_HEIGHT, _model->getVitesseJeu());
     }
 
     /*** CREATION DE LA BALLE ***/
-    if(!balleTexture.loadFromFile(IMG_BALLE))
+    if(!_textureBalle.loadFromFile(IMG_BALLE))
         imageErreur(IMG_BALLE);
     else {
         imageTrouvee(IMG_BALLE);
-        _balleGraphique = new GraphicElement(balleTexture, _model->getBalleX(), _model->getBalleY(), 20, 20);
+        _balleGraphique = new GraphicElement(_textureBalle, _model->getBalleX(), _model->getBalleY(), 20, 20);
 
         /*** Redimensionne l'image de la balle ***/
         sf::FloatRect bb = _balleGraphique->getLocalBounds();
@@ -40,12 +43,12 @@ void View::genererView() {
     }
 
     /*** CREATION SPRITE OBSTACLE ***/
-    if(!obstacleTexture.loadFromFile(IMG_OBSTACLE)) {
+    if(!_textureObstacle.loadFromFile(IMG_OBSTACLE)) {
         imageErreur(IMG_OBSTACLE);
     }
     else {
         imageTrouvee(IMG_OBSTACLE);
-        _obstacleGraphique = new GraphicElement(obstacleTexture, 0, 0, 10, 10);
+        _obstacleGraphique = new GraphicElement(_textureObstacle, 0, 0, 10, 10);
 
         /*** Redimensionne l'image de l'obstacle ***/
         sf::FloatRect frO = _balleGraphique->getLocalBounds();
@@ -53,7 +56,6 @@ void View::genererView() {
         float height_factor_O = 40/frO.height;
         _obstacleGraphique->setScale(width_factor_O, height_factor_O);
     }
-
 }
 
 View::~View(){
@@ -65,10 +67,6 @@ View::~View(){
         delete _backGroundAvant;
     if(_window!= NULL)
         delete _window;
-}
-
-void View::setModel(Model * model){
-    _model = model;
 }
 
 void View::draw(){

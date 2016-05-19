@@ -14,6 +14,7 @@
 const int VIEW_WIDTH = 800;
 const int VIEW_HEIGHT = 600;
 
+const std::string FONT = "Antique Olive.tff";
 const std::string IMG_BALLE = "img/ball.png";
 const std::string IMG_BACKGROUND_FRONT = "img/city_1.png";
 const std::string IMG_BACKGROUND_BACK = "img/city_2.png";
@@ -27,10 +28,13 @@ private :
     Model *_model;
 
     /*** TEXTURES ***/
-    sf::Texture backGroundFrontTexture;
-    sf::Texture backGroundBackTexture;
-    sf::Texture balleTexture;
-    sf::Texture obstacleTexture;
+    sf::Texture _textureBackGroundAvant;
+    sf::Texture _textureBackGroundArriere;
+    sf::Texture _textureBalle;
+    sf::Texture _textureObstacle;
+
+    sf::Font _font;
+    sf::Text _texteScore;
 
     SlidingBackground *_backGroundAvant, *_backGroundArriere;
     GraphicElement *_balleGraphique;
@@ -39,12 +43,9 @@ private :
     //std::map<const MovableElement*, GraphicElement*> _movableToGraphic;
 
 public:
-    View();
+    View(Model *model);
     ~View();
 
-    void genererView();
-
-    void setModel(Model *model);
     void draw();
     bool treatEvents();
     void synchronize();

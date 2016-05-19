@@ -10,7 +10,7 @@
 
 const int LARGEUR_MODEL = 800;
 const int HAUTEUR_MODEL = 600;
-const int HAUTEUR_SAUT = HAUTEUR_MODEL/2;
+const int HAUTEUR_SAUT = HAUTEUR_MODEL/3;
 const int HAUTEUR_SOL = 500;
 const int TAILLE_ELEMENTS = 40;
 const int VITESSE_BALLE = 10;

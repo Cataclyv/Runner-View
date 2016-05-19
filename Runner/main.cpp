@@ -7,11 +7,8 @@ using namespace std;
 
 int main()
 {
-    srand(time(NULL));
-    View _view;
     Model _model;
-    _view.setModel(&_model);
-    _view.genererView();
+    View _view{&_model};
 
     while(_view.treatEvents()){
       _model.nextStep();

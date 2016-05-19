@@ -17,6 +17,7 @@ public:
     void plusObstacle();
 
     std::string getPseudo();
+
     void setPseudo(std::string pseudo);
 };
 

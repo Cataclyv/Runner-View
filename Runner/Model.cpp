@@ -5,7 +5,7 @@ using namespace std;
 Model::Model() : _ecart{50}, _vitesseJeu{2}, _w{LARGEUR_MODEL}, _h {HAUTEUR_MODEL}, _degatsObstacle{25}
 {
     _balle = new Balle(HAUTEUR_SOL);
-    std::cout << "Balle crée aux coordonnées (" << _balle->getX() << ", " << _balle->getY() << ")" << std::endl << std::endl;
+    cout << "Balle crée aux coordonnées (" << _balle->getX() << ", " << _balle->getY() << ")" << endl << endl;
     _scoreJoueur = new Score();
 
     /*** REMPLISSAGE MODELE ***/
@@ -25,7 +25,7 @@ void Model::calculerEcart()
 {
     srand(time(NULL)+_ecart);
     _ecart = rand()%ECART_BORNE + ECART_MIN;
-    cout << "ECART -> " << _ecart << endl;
+    //cout << "ECART -> " << _ecart << endl;
 }
 
 void Model::ajouterElementAleatoire(int xCourant)
@@ -49,6 +49,7 @@ bool Model::nextStep() {
         /*** Si le MovableElement sort du jeu ***/
         if(!e->enJeu()) {
             _scoreJoueur->plusObstacle();
+            cout << "SCORE COURANT -> " << _scoreJoueur->score() << endl;
             _elements.erase(e);
             elementSupprime = true;
         }
@@ -91,7 +92,7 @@ bool Model::nextStep() {
 
     /*** Détection mort du joueur ***/
     if(_balle->getPv() <= 0) {
-        std::cout << "Mort du joueur" << std::endl;
+        cout << "Mort du joueur" << endl;
         return false;
     }
     return false;

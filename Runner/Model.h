@@ -13,10 +13,12 @@ const int HAUTEUR_MODEL = 600;
 const int HAUTEUR_SAUT = HAUTEUR_MODEL/3;
 const int HAUTEUR_SOL = 500;
 const int TAILLE_ELEMENTS = 40;
-const int VITESSE_BALLE = 10;
+const int VITESSE_BALLE = 10;   // Vitesse de déplacement horizontal
+const int VITESSE_INITIALE_JEU = 4;
+const int COEFF_GRAVITE = 3;    // Utilisé pour la vitesse de saut
 const int MAX_ELEMENTS = 20;
 const int ECART_BORNE = 600;
-const int ECART_MIN = 40;
+const int ECART_MIN = 50;
 
 
 class Model
@@ -38,6 +40,7 @@ public:
     void ajouterElementAleatoire(int coefficient);
 
     bool nextStep();
+    void rajouterElement();
 
     void deplacerBalle(bool aGauche);
     void stopperBalle();

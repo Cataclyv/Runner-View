@@ -17,7 +17,7 @@ View::View(Model *model) : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}, _model{model}
         imageErreur(IMG_BACKGROUND_FRONT);
     else {
         imageTrouvee(IMG_BACKGROUND_FRONT);
-        _backGroundAvant = new SlidingBackground(_textureBackGroundAvant, VIEW_WIDTH, VIEW_HEIGHT, _model->getVitesseJeu()*2);
+        _backGroundAvant = new SlidingBackground(_textureBackGroundAvant, VIEW_WIDTH, VIEW_HEIGHT, _model->getVitesseJeu());
     }
 
     /*** SLIDINGBACKGROUND ARRIERE ***/
@@ -25,7 +25,7 @@ View::View(Model *model) : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}, _model{model}
         imageErreur(IMG_BACKGROUND_BACK);
     else {
         imageTrouvee(IMG_BACKGROUND_BACK);
-        _backGroundArriere = new SlidingBackground(_textureBackGroundArriere, VIEW_WIDTH, VIEW_HEIGHT, _model->getVitesseJeu());
+        _backGroundArriere = new SlidingBackground(_textureBackGroundArriere, VIEW_WIDTH, VIEW_HEIGHT, _model->getVitesseJeu()/2);
     }
 
     /*** CREATION DE LA BALLE ***/
@@ -48,17 +48,42 @@ View::View(Model *model) : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}, _model{model}
     }
     else {
         imageTrouvee(IMG_OBSTACLE);
-        _obstacleGraphique = new GraphicElement(_textureObstacle, 0, 0, 10, 10);
+        _obstacleGraphique = new GraphicElement(_textureObstacle, 0, 0, TAILLE_ELEMENTS, TAILLE_ELEMENTS);
 
         /*** Redimensionne l'image de l'obstacle ***/
+        /*
         sf::FloatRect frO = _balleGraphique->getLocalBounds();
         float width_factor_O = 40/frO.width;
         float height_factor_O = 40/frO.height;
         _obstacleGraphique->setScale(width_factor_O, height_factor_O);
+        */
+
+    }
+
+    /*** CREATION SPRITE PIECE ***/
+    if(!_texturePiece.loadFromFile(IMG_PIECE))
+        imageErreur(IMG_BALLE);
+    else {
+        imageTrouvee(IMG_BALLE);
+        _pieceGraphique = new GraphicElement(_texturePiece, 0, 0, TAILLE_ELEMENTS, TAILLE_ELEMENTS);
+    }
+
+    /*** CREATION SPRITE MEDIKIT ***/
+    if(!_textureMedikit.loadFromFile(IMG_MEDIKIT))
+        imageErreur(IMG_MEDIKIT);
+    else {
+        imageTrouvee(IMG_MEDIKIT);
+        _medikitGraphique = new GraphicElement(_textureMedikit, 0, 0, TAILLE_ELEMENTS, TAILLE_ELEMENTS);
     }
 }
 
 View::~View(){
+    if(_medikitGraphique != NULL)
+        delete _medikitGraphique;
+    if(_pieceGraphique != NULL)
+        delete _pieceGraphique;
+    if(_obstacleGraphique != NULL)
+        delete _obstacleGraphique;
     if(_balleGraphique != NULL)
         delete _balleGraphique;
     if(_backGroundArriere != NULL)
@@ -81,6 +106,14 @@ void View::draw(){
             _obstacleGraphique->setPosition(element->getX(), element->getY());
             _obstacleGraphique->draw(_window);
         }
+        else if(element->getType() == "Piece") {
+            _pieceGraphique->setPosition(element->getX(), element->getY());
+            _pieceGraphique->draw(_window);
+        }
+        else if(element->getType() == "Medikit") {
+            _medikitGraphique->setPosition(element->getX(), element->getY());
+            _medikitGraphique->draw(_window);
+        }
     }
 
     _window->display();
@@ -97,6 +130,7 @@ bool View::treatEvents(){
             if ((event.type == sf::Event::Closed) ||
                     ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))) {
                 _window->close();
+                cout << endl << "Jeu quitté" << endl;
                 result = false;
             }
             if (event.type == sf::Event::KeyPressed)

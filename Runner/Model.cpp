@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Model::Model() : _ecart{50}, _vitesseJeu{2}, _w{LARGEUR_MODEL}, _h {HAUTEUR_MODEL}, _degatsObstacle{25}
+Model::Model() : _ecart{50}, _vitesseJeu{VITESSE_INITIALE_JEU}, _w{LARGEUR_MODEL}, _h {HAUTEUR_MODEL}, _degatsObstacle{25}
 {
     _balle = new Balle(HAUTEUR_SOL);
     cout << "Balle crée aux coordonnées (" << _balle->getX() << ", " << _balle->getY() << ")" << endl << endl;
@@ -16,6 +16,7 @@ Model::Model() : _ecart{50}, _vitesseJeu{2}, _w{LARGEUR_MODEL}, _h {HAUTEUR_MODE
 }
 
 Model::~Model() {
+    delete _scoreJoueur;
     delete _balle;
     for(MovableElement* e : _elements)
         delete e;
@@ -24,17 +25,19 @@ Model::~Model() {
 void Model::calculerEcart()
 {
     srand(time(NULL)+_ecart);
-    _ecart = rand()%ECART_BORNE + ECART_MIN;
+    _ecart = (rand()%ECART_BORNE) + ECART_MIN;
     //cout << "ECART -> " << _ecart << endl;
 }
 
 void Model::ajouterElementAleatoire(int xCourant)
 {
     int determination_element = rand()%100;
+
     if(determination_element < 70)
         _elements.insert(new Obstacle(xCourant, HAUTEUR_SOL-TAILLE_ELEMENTS, TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0));
     else if(determination_element >= 70 && determination_element < 85) {
         int determination_bonus = rand()%100;
+
         if(determination_bonus < 90)
             _elements.insert(new Piece(xCourant, -_vitesseJeu));
         else
@@ -51,19 +54,15 @@ bool Model::nextStep() {
             _scoreJoueur->plusObstacle();
             cout << "SCORE COURANT -> " << _scoreJoueur->score() << endl;
             _elements.erase(e);
+            delete e;
             elementSupprime = true;
         }
-        e->move();
+        else
+            e->move();
     }
     if(elementSupprime) // Si un élément a été supprimé, en rajoute un nouveau
     {
-        int nouvellePos =0;
-        for(auto e : _elements) {
-            if(e->getX() > nouvellePos)
-                nouvellePos = e->getX();
-        }
-        calculerEcart();
-        ajouterElementAleatoire(nouvellePos + _ecart);
+        rajouterElement();
     }
 
     bougerBalle();
@@ -73,20 +72,24 @@ bool Model::nextStep() {
         if(e->collision(_balle)) {
             if(e->getType() == "Obstacle") {
                 _balle->setPv(_balle->getPv()-_degatsObstacle);
+                cout << "Le joueur perd " << _degatsObstacle << " PV ; il lui en reste " << _balle->getPv() << endl;
+                rajouterElement();
             }
             else {
                 if(e->getType() == "Medikit") {
-                    Medikit reference;
-                    _balle->setPv(_balle->getPv() + reference.getSoins());
-                    if(_balle->getPv() > PV_MAX)
-                        _balle->setPv(PV_MAX);
+                    _balle->setPv(_balle->getPv()+25);
+                    cout << "Le joueur a ramassé un médikit et est passé à " << _balle->getPv() << " PV" << endl;
                     _scoreJoueur->plusBonus();
+                    rajouterElement();
                 }
 
                 else if(e->getType() == "Piece") {
+                    cout << "Le joueur a ramassé une pièce" << endl;
                     _scoreJoueur->plusPiece();
+                    rajouterElement();
                 }
             }
+            _elements.erase(e);
         }
     }
 
@@ -95,7 +98,13 @@ bool Model::nextStep() {
         cout << "Mort du joueur" << endl;
         return false;
     }
-    return false;
+    return true;
+}
+
+void Model::rajouterElement()
+{
+    calculerEcart();
+    ajouterElementAleatoire(LARGEUR_MODEL + _ecart);
 }
 
 void Model::deplacerBalle(bool aGauche) {
@@ -145,13 +154,13 @@ void Model::bougerBalle()
 {
     if(_balle->getEnSaut() == true) {
         if(_balle->getEnChute() == false) {
-            _balle->setDy(-10*_vitesseJeu);
+            _balle->setDy(-COEFF_GRAVITE*_vitesseJeu);
             if(_balle->getY() < HAUTEUR_SAUT) {
                 _balle->setEnChute(true);
             }
         }
         else if(_balle->getEnChute() == true) {
-            _balle->setDy(10*_vitesseJeu);
+            _balle->setDy(COEFF_GRAVITE*_vitesseJeu);
             if(_balle->getY() + _balle->getH() > HAUTEUR_SOL) {
                 _balle->setEnChute(false);
                 _balle->setEnSaut(false);

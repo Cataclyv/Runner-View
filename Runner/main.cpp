@@ -10,11 +10,12 @@ int main()
     Model _model;
     View _view{&_model};
 
-    while(_view.treatEvents()){
-      _model.nextStep();
+    while(_view.treatEvents() && _model.nextStep()){
       _view.draw();
       _view.synchronize();
     }
+
+    cout << endl;
 
     return EXIT_SUCCESS;
 }

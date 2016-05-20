@@ -74,7 +74,8 @@ bool MovableElement::enJeu() const
 
 bool MovableElement::collision(MovableElement *e) const
 {
-    if(((_x+_w > e->getX()) && (_x+_w < e->getX()+e->getW()) && (_y > e->getY())) || ((_y > e->getY()) && (_x > e->getX()) && (_x < e->getX()+e->getW())))
+    if(((_x+_w > e->getX()) && (_x+_w < e->getX()+e->getW()) && (_y > e->getY()) && (_y < e->getY()+e->getH())) || ((_y > e->getY()) && (_y < e->getY()+e->getH()) && (_x > e->getX()) && (_x < e->getX()+e->getW()))
+            || ((_x+_w > e->getX()) && (_x+_w < e->getX()+e->getW()) && (_y+_h > e->getY()) && (_y+_h < e->getY()+e->getH())) || ((_y+_h > e->getY()) && (_y+_h < e->getY()+e->getH()) && (_x > e->getX()) && (_x < e->getX()+e->getW())))
             return true;
     return false;
 }

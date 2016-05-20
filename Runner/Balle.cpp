@@ -40,6 +40,8 @@ void Balle::setDx(int dx) {
 
 void Balle::setPv(int pv) {
     _pv = pv;
+    if(_pv > PV_MAX)
+        _pv = PV_MAX;
 }
 
 void Balle::setEnSaut(bool saut) {

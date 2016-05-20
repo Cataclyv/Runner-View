@@ -18,7 +18,9 @@ const std::string FONT = "Antique Olive.tff";
 const std::string IMG_BALLE = "img/ball.png";
 const std::string IMG_BACKGROUND_FRONT = "img/city_1.png";
 const std::string IMG_BACKGROUND_BACK = "img/city_2.png";
-const std::string IMG_OBSTACLE = "img/ball.png";
+const std::string IMG_OBSTACLE = "img/obstacle.png";
+const std::string IMG_PIECE = "img/piece.png";
+const std::string IMG_MEDIKIT = "img/medikit.png";
 
 class View
 {
@@ -32,15 +34,19 @@ private :
     sf::Texture _textureBackGroundArriere;
     sf::Texture _textureBalle;
     sf::Texture _textureObstacle;
+    sf::Texture _texturePiece;
+    sf::Texture _textureMedikit;
 
+    /*** TEXTES ***/
     sf::Font _font;
     sf::Text _texteScore;
 
+    /*** ELEMENTS GRAPHIQUES ***/
     SlidingBackground *_backGroundAvant, *_backGroundArriere;
     GraphicElement *_balleGraphique;
     GraphicElement *_obstacleGraphique;
-
-    //std::map<const MovableElement*, GraphicElement*> _movableToGraphic;
+    GraphicElement *_pieceGraphique;
+    GraphicElement *_medikitGraphique;
 
 public:
     View(Model *model);

@@ -150,7 +150,6 @@ void Model::bougerBalle()
                 _balle->setEnChute(true);
             }
         }
-
         else if(_balle->getEnChute() == true) {
             _balle->setDy(10*_vitesseJeu);
             if(_balle->getY() + _balle->getH() > HAUTEUR_SOL) {

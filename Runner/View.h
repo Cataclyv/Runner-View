@@ -13,14 +13,16 @@
 
 const int VIEW_WIDTH = 800;
 const int VIEW_HEIGHT = 600;
+const float POSITION_BARRE_VIE = 10.f;
+const float LARGEUR_BARRE_VIE = 20.f;
 
-const std::string FONT = "Antique Olive.tff";
-const std::string IMG_BALLE = "img/ball.png";
-const std::string IMG_BACKGROUND_FRONT = "img/city_1.png";
-const std::string IMG_BACKGROUND_BACK = "img/city_2.png";
-const std::string IMG_OBSTACLE = "img/obstacle.png";
-const std::string IMG_PIECE = "img/piece.png";
-const std::string IMG_MEDIKIT = "img/medikit.png";
+const std::string FONT = "polices/Antique Olive.tff";
+const std::string IMG_BALLE = "images/ball.png";
+const std::string IMG_BACKGROUND_FRONT = "images/city_1.png";
+const std::string IMG_BACKGROUND_BACK = "images/city_2.png";
+const std::string IMG_OBSTACLE = "images/obstacle.png";
+const std::string IMG_PIECE = "images/piece.png";
+const std::string IMG_MEDIKIT = "images/medikit.png";
 
 class View
 {
@@ -40,6 +42,7 @@ private :
     /*** TEXTES ***/
     sf::Font _font;
     sf::Text _texteScore;
+    sf::Text _textePv;
 
     /*** ELEMENTS GRAPHIQUES ***/
     SlidingBackground *_backGroundAvant, *_backGroundArriere;
@@ -47,6 +50,10 @@ private :
     GraphicElement *_obstacleGraphique;
     GraphicElement *_pieceGraphique;
     GraphicElement *_medikitGraphique;
+
+    /*** FORMES GEOMETRIQUES ***/
+    sf::RectangleShape _barreVie;
+    sf::RectangleShape _cadreBarreVie;
 
 public:
     View(Model *model);
@@ -59,6 +66,8 @@ public:
     /* FONCTIONS D'AFFICHAGE TERMINAL */
     void imageErreur(std::string chemin);
     void imageTrouvee(std::string chemin);
+    void policeErreur(std::string chemin);
+    void policeTrouvee(std::string chemin);
 };
 
 #endif // VIEW_H

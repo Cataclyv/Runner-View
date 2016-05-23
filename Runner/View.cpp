@@ -7,10 +7,20 @@ View::View(Model *model) : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}, _model{model}
     _window = new sf::RenderWindow(sf::VideoMode(_w, _h, 32), "Runner", sf::Style::Close);
     _window->setKeyRepeatEnabled(true);
 
-    _font.loadFromFile(FONT);
+    /*** CREATION FONT ***/
+    if(!_font.loadFromFile(FONT))
+        policeErreur(FONT);
+    else {
+        policeTrouvee(FONT);
+    }
+
+    /*** CREATION TEXTE -> SCORE ***/
     _texteScore.setFont(_font);
     _texteScore.setString("SCORE : 0");
     _texteScore.setPosition(700, 50);
+    sf::FloatRect bb = _texteScore.getLocalBounds();
+    _texteScore.setScale(300/bb.width, 60/bb.height);
+    _texteScore.setColor(sf::Color::Black);
 
     /*** SLIDINGBACKGROUND AVANT ***/
     if(!_textureBackGroundAvant.loadFromFile(IMG_BACKGROUND_FRONT))
@@ -75,6 +85,18 @@ View::View(Model *model) : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}, _model{model}
         imageTrouvee(IMG_MEDIKIT);
         _medikitGraphique = new GraphicElement(_textureMedikit, 0, 0, TAILLE_ELEMENTS, TAILLE_ELEMENTS);
     }
+
+    /*** CREATION BARRE DE VIE ***/
+    _barreVie.setPosition(sf::Vector2f(POSITION_BARRE_VIE, POSITION_BARRE_VIE));
+    _barreVie.setSize(sf::Vector2f(2*_model->getPvBalle(), LARGEUR_BARRE_VIE));
+    _barreVie.setFillColor(sf::Color(0, 255, 0));
+    _barreVie.setOutlineThickness(1.f);
+    _barreVie.setOutlineColor(sf::Color(0, 0, 0));
+    _cadreBarreVie.setPosition(_barreVie.getPosition());
+    _cadreBarreVie.setSize(_barreVie.getSize());
+    _cadreBarreVie.setFillColor(sf::Color(0, 0, 0));
+    _cadreBarreVie.setOutlineThickness(1.f);
+    _cadreBarreVie.setOutlineColor(sf::Color(0, 0, 0));
 }
 
 View::~View(){
@@ -100,6 +122,12 @@ void View::draw(){
     _backGroundArriere->draw(_window);
     _backGroundAvant->draw(_window);
     _balleGraphique->draw(_window);
+
+    _window->draw(_cadreBarreVie);
+    _barreVie.setSize(sf::Vector2f(2*_model->getPvBalle(), LARGEUR_BARRE_VIE));
+    _window->draw(_barreVie);
+
+    _window->draw(_texteScore);
 
     for(auto element : _model->recupererElements()) {
         if(element->getType() == "Obstacle") {
@@ -162,10 +190,20 @@ void View::synchronize()
 
 void View::imageTrouvee(string chemin)
 {
-    cerr << chemin << " -> chargée" << endl;
+    cout << chemin << " -> chargée" << endl;
+}
+
+void View::policeErreur(string chemin)
+{
+    cerr << "ERREUR lors du chargement de la police -> " << chemin << endl;
+}
+
+void View::policeTrouvee(string chemin)
+{
+    cout << chemin << " -> chargée" << endl;
 }
 
 void View::imageErreur(string chemin)
 {
-    cerr << "ERREUR lors du chargement de l'image -> " << chemin << std::endl;
+    cerr << "ERREUR lors du chargement de l'image -> " << chemin << endl;
 }

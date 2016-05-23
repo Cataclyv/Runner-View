@@ -16,9 +16,10 @@ const int TAILLE_ELEMENTS = 40;
 const int VITESSE_BALLE = 10;   // Vitesse de déplacement horizontal
 const int VITESSE_INITIALE_JEU = 4;
 const int COEFF_GRAVITE = 3;    // Utilisé pour la vitesse de saut
-const int MAX_ELEMENTS = 20;
-const int ECART_BORNE = 600;
+const int MAX_ELEMENTS = 20; // Nombre d'éléments présents à la génération et au cours du jeu
+const int ECART_BORNE = 300;
 const int ECART_MIN = 50;
+const int DEGATS_OBSTACLE = 25;
 
 
 class Model
@@ -40,15 +41,17 @@ public:
     void ajouterElementAleatoire(int coefficient);
 
     bool nextStep();
-    void rajouterElement();
+    void rajouterElement(bool debutJeu);
 
     void deplacerBalle(bool aGauche);
     void stopperBalle();
     void sautBalle();
     void bougerBalle();
+    void setPvBalle(int pv);
 
     int getBalleX() const;
     int getBalleY() const;
+    int getPvBalle() const;
     int getVitesseJeu() const;
     bool balleAuSol() const;
 

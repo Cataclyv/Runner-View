@@ -16,7 +16,7 @@ const int VIEW_HEIGHT = 600;
 const float POSITION_BARRE_VIE = 10.f;
 const float LARGEUR_BARRE_VIE = 20.f;
 
-const std::string FONT = "polices/Antique Olive.tff";
+const std::string FONT = "polices/Antique_Olive.ttf";
 const std::string IMG_BALLE = "images/ball.png";
 const std::string IMG_BACKGROUND_FRONT = "images/city_1.png";
 const std::string IMG_BACKGROUND_BACK = "images/city_2.png";
@@ -54,6 +54,10 @@ private :
     /*** FORMES GEOMETRIQUES ***/
     sf::RectangleShape _barreVie;
     sf::RectangleShape _cadreBarreVie;
+
+    /*** GESTION DU TEMPS ***/
+    sf::Clock _clock;
+    sf::Time _time;
 
 public:
     View(Model *model);

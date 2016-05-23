@@ -5,16 +5,14 @@
 #include <string>
 #include "MovableElement.h"
 
-const int VAL_PIECE = 10;
-const int VAL_BONUS = 50;
 const int TAILLE = 40;
 
 class Bonus : public MovableElement
 {
 protected:
-    int _valPoints;
+    std::string _type;
 public:
-    Bonus(int x, int vitesse, int valeur);
+    Bonus(int x, int vitesse, std::string type);
 
     void move();
 

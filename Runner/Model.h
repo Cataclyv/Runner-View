@@ -4,8 +4,7 @@
 #include "Balle.h"
 #include "Score.h"
 #include "Obstacle.h"
-#include "Medikit.h"
-#include "Piece.h"
+#include "Bonus.h"
 #include <set>
 
 const int LARGEUR_MODEL = 800;
@@ -20,6 +19,7 @@ const int MAX_ELEMENTS = 20; // Nombre d'éléments présents à la génération
 const int ECART_BORNE = 300;
 const int ECART_MIN = 50;
 const int DEGATS_OBSTACLE = 25;
+const int SOINS = 25;
 
 
 class Model
@@ -53,6 +53,7 @@ public:
     int getBalleY() const;
     int getPvBalle() const;
     int getVitesseJeu() const;
+    int getScore() const;
     bool balleAuSol() const;
 
     std::set<MovableElement*> recupererElements() const;

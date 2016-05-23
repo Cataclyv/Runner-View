@@ -7,20 +7,14 @@ View::View(Model *model) : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}, _model{model}
     _window = new sf::RenderWindow(sf::VideoMode(_w, _h, 32), "Runner", sf::Style::Close);
     _window->setKeyRepeatEnabled(true);
 
+    _time = _clock.restart();
+
     /*** CREATION FONT ***/
     if(!_font.loadFromFile(FONT))
         policeErreur(FONT);
     else {
         policeTrouvee(FONT);
     }
-
-    /*** CREATION TEXTE -> SCORE ***/
-    _texteScore.setFont(_font);
-    _texteScore.setString("SCORE : 0");
-    _texteScore.setPosition(700, 50);
-    sf::FloatRect bb = _texteScore.getLocalBounds();
-    _texteScore.setScale(300/bb.width, 60/bb.height);
-    _texteScore.setColor(sf::Color::Black);
 
     /*** SLIDINGBACKGROUND AVANT ***/
     if(!_textureBackGroundAvant.loadFromFile(IMG_BACKGROUND_FRONT))
@@ -97,6 +91,14 @@ View::View(Model *model) : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}, _model{model}
     _cadreBarreVie.setFillColor(sf::Color(0, 0, 0));
     _cadreBarreVie.setOutlineThickness(1.f);
     _cadreBarreVie.setOutlineColor(sf::Color(0, 0, 0));
+
+    /*** CREATION TEXTE -> SCORE ***/
+    _texteScore.setFont(_font);
+    _texteScore.setString("SCORE : " + to_string(_model->getScore()));
+    _texteScore.setPosition(_barreVie.getPosition().x, _barreVie.getPosition().y + 20);
+    sf::FloatRect bb = _texteScore.getLocalBounds();
+    _texteScore.setScale(100/bb.width, 20/bb.height);
+    _texteScore.setColor(sf::Color::Black);
 }
 
 View::~View(){
@@ -127,6 +129,7 @@ void View::draw(){
     _barreVie.setSize(sf::Vector2f(2*_model->getPvBalle(), LARGEUR_BARRE_VIE));
     _window->draw(_barreVie);
 
+    _texteScore.setString("SCORE : " + to_string(_model->getScore()));
     _window->draw(_texteScore);
 
     for(auto element : _model->recupererElements()) {

@@ -1,9 +1,11 @@
 #include "Bonus.h"
 
-Bonus::Bonus(int x, int vitesse, int valeur) :
-    MovableElement(x, 300, 0, 0, vitesse, 0), _valPoints(valeur)
+using namespace std;
+
+Bonus::Bonus(int x, int vitesse, string type) :
+    MovableElement(x, 300, 0, 0, vitesse, 0), _type{type}
 {
-    std::cout<< "Bonus créé aux coordonnées ("
+    cout <<  _type << " créé aux coordonnées ("
              << _x << ", " << _y << ")";
 }
 
@@ -11,11 +13,6 @@ void Bonus::move() {
     _x += _dx;
 }
 
-int Bonus::getVal() const
-{
-    std::cout << _valPoints << std::endl;
-}
-
 std::string Bonus::getType() const {
-    return "Bonus";
+    return _type;
 }

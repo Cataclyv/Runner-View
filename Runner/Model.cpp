@@ -39,9 +39,9 @@ void Model::ajouterElementAleatoire(int xCourant)
         int determination_bonus = rand()%100;
 
         if(determination_bonus < 90)
-            _elements.insert(new Piece(xCourant, -_vitesseJeu));
+            _elements.insert(new Bonus(xCourant, -_vitesseJeu, "Piece"));
         else
-            _elements.insert(new Medikit(xCourant, -_vitesseJeu));
+            _elements.insert(new Bonus(xCourant, -_vitesseJeu, "Medikit"));
     }
 }
     // Quand le jeu sera Game Over, retourne FALSE
@@ -52,7 +52,6 @@ bool Model::nextStep() {
     for(auto e : _elements) {
         /*** Si le MovableElement sort du jeu ***/
         if(!e->enJeu()) {
-            _scoreJoueur->plusObstacle();
             cout << "SCORE COURANT -> " << _scoreJoueur->score() << endl;
             _elements.erase(e);
             delete e;
@@ -78,7 +77,7 @@ bool Model::nextStep() {
             }
             else {
                 if(e->getType() == "Medikit") {
-                    _balle->setPv(_balle->getPv()+25);
+                    _balle->setPv(_balle->getPv()+SOINS);
                     cout << "Le joueur a ramassé un médikit et est passé à " << _balle->getPv() << " PV" << endl;
                     _scoreJoueur->plusBonus();
                 }
@@ -99,7 +98,7 @@ bool Model::nextStep() {
 
     /*** Détection mort du joueur ***/
     if(_balle->getPv() <= 0) {
-        cout << "Mort du joueur" << endl;
+        cout << endl << "Mort du joueur" << endl;
         continuer = false;
     }
     return continuer;
@@ -145,6 +144,11 @@ int Model::getPvBalle() const
 int Model::getVitesseJeu() const
 {
     return _vitesseJeu;
+}
+
+int Model::getScore() const
+{
+    return _scoreJoueur->score();
 }
 
 bool Model::balleAuSol() const

@@ -6,7 +6,7 @@
 class Score
 {
 private :
-    int _nbPieces, _nbBonus, _nbChunks;
+    int _nbPieces, _nbBonus, _tempsPasse;
     std::string _pseudo;
 public:
     Score();
@@ -14,7 +14,7 @@ public:
 
     void plusPiece();
     void plusBonus();
-    void plusObstacle();
+    void plusTemps();
 
     std::string getPseudo();
 

@@ -5,7 +5,7 @@
 
 const int W_BALLE = 50;
 const int H_BALLE = 50;
-const int PV_MAX = 100;
+const int PV_MAX = 1000;
 
 class Balle : public MovableElement
 {

@@ -18,7 +18,7 @@ const float LARGEUR_BARRE_VIE = 20.f;
 
 const std::string FONT = "polices/Antique_Olive.ttf";
 const std::string IMG_BALLE = "images/ball.png";
-const std::string IMG_BACKGROUND_FRONT = "images/city_1.png";
+const std::string IMG_BACKGROUND_FRONT = "images/Fond_Marin.png";
 const std::string IMG_BACKGROUND_BACK = "images/city_2.png";
 const std::string IMG_OBSTACLE = "images/obstacle.png";
 const std::string IMG_PIECE = "images/piece.png";

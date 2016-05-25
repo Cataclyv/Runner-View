@@ -80,6 +80,16 @@ View::View(Model *model) : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}, _model{model}
         _medikitGraphique = new GraphicElement(_textureMedikit, 0, 0, TAILLE_ELEMENTS, TAILLE_ELEMENTS);
     }
 
+
+
+
+
+    /*** FAIRE BRUITAGE ***/
+
+
+
+
+
     /*** CREATION BARRE DE VIE ***/
     _barreVie.setPosition(sf::Vector2f(POSITION_BARRE_VIE, POSITION_BARRE_VIE));
     _barreVie.setSize(sf::Vector2f(2*_model->getPvBalle(), LARGEUR_BARRE_VIE));

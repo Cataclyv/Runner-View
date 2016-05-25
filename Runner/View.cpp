@@ -132,6 +132,7 @@ View::~View(){
 void View::draw(){
     _window->clear();
 
+//    while(_ )
     _backGroundArriere->draw(_window);
     _backGroundAvant->draw(_window);
     _balleGraphique->draw(_window);

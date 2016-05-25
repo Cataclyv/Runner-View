@@ -8,6 +8,7 @@
 #include "MovableElement.h"
 #include "GraphicElement.h"
 #include "SlidingBackground.h"
+#include "ecranintroduction.h"
 
 #include <SFML/Graphics.hpp>
 
@@ -38,6 +39,8 @@ private :
     sf::Texture _textureObstacle;
     sf::Texture _texturePiece;
     sf::Texture _textureMedikit;
+    sf::Texture _introImg1;
+    sf::Texture _introImg2;
 
     /*** TEXTES ***/
     sf::Font _font;
@@ -50,6 +53,9 @@ private :
     GraphicElement *_obstacleGraphique;
     GraphicElement *_pieceGraphique;
     GraphicElement *_medikitGraphique;
+    GraphicElement *_introImgSprite1;
+    GraphicElement *_introImgSprite2;
+    ecranIntroduction m_introduction;
 
     /*** FORMES GEOMETRIQUES ***/
     sf::RectangleShape _barreVie;

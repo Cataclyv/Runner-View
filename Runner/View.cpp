@@ -2,7 +2,7 @@
 
 using namespace std;
 
-View::View(Model *model) : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}, _model{model}
+View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dansMenu{true}
 {
     _window = new sf::RenderWindow(sf::VideoMode(_w, _h, 32), "Runner", sf::Style::Close);
     _window->setKeyRepeatEnabled(true);
@@ -16,12 +16,14 @@ View::View(Model *model) : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}, _model{model}
         policeTrouvee(FONT);
     }
 
+    sf::FloatRect bb;
+
     /*** SLIDINGBACKGROUND AVANT ***/
     if(!_textureBackGroundAvant.loadFromFile(IMG_BACKGROUND_FRONT))
         imageErreur(IMG_BACKGROUND_FRONT);
     else {
         imageTrouvee(IMG_BACKGROUND_FRONT);
-        _backGroundAvant = new SlidingBackground(_textureBackGroundAvant, VIEW_WIDTH, VIEW_HEIGHT, _model->getVitesseJeu());
+        _backGroundAvant = new SlidingBackground(_textureBackGroundAvant, LARGEUR_JEU, HAUTEUR_JEU, _model->getVitesseJeu());
     }
 
     /*** SLIDINGBACKGROUND ARRIERE ***/
@@ -29,7 +31,7 @@ View::View(Model *model) : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}, _model{model}
         imageErreur(IMG_BACKGROUND_BACK);
     else {
         imageTrouvee(IMG_BACKGROUND_BACK);
-        _backGroundArriere = new SlidingBackground(_textureBackGroundArriere, VIEW_WIDTH, VIEW_HEIGHT, _model->getVitesseJeu()/2);
+        _backGroundArriere = new SlidingBackground(_textureBackGroundArriere, LARGEUR_JEU, HAUTEUR_JEU, _model->getVitesseJeu()/2);
     }
 
     /*** CREATION DE LA BALLE ***/
@@ -80,20 +82,10 @@ View::View(Model *model) : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}, _model{model}
         _medikitGraphique = new GraphicElement(_textureMedikit, 0, 0, TAILLE_ELEMENTS, TAILLE_ELEMENTS);
     }
 
-
-
-
-
-    /*** FAIRE BRUITAGE ***/
-
-
-
-
-
     /*** CREATION BARRE DE VIE ***/
     _barreVie.setPosition(sf::Vector2f(POSITION_BARRE_VIE, POSITION_BARRE_VIE));
     _barreVie.setSize(sf::Vector2f(2*_model->getPvBalle(), LARGEUR_BARRE_VIE));
-    _barreVie.setFillColor(sf::Color(0, 255, 0));
+    _barreVie.setFillColor(sf::Color::Green);
     _barreVie.setOutlineThickness(1.f);
     _barreVie.setOutlineColor(sf::Color(0, 0, 0));
     _cadreBarreVie.setPosition(_barreVie.getPosition());
@@ -107,9 +99,38 @@ View::View(Model *model) : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}, _model{model}
     _texteScore.setFont(_font);
     _texteScore.setString("SCORE : " + to_string(_model->getScore()));
     _texteScore.setPosition(_barreVie.getPosition().x, _barreVie.getPosition().y + 20);
-    sf::FloatRect bb = _texteScore.getLocalBounds();
+    bb = _texteScore.getLocalBounds();
     _texteScore.setScale(100/bb.width, 20/bb.height);
     _texteScore.setColor(sf::Color::Black);
+
+    /* ************ *
+    * CREATION MENU *
+    * ************ */
+
+    /*** CREATION BOUTONS ***/
+    _texteJouer.setFont(_font);
+    _texteJouer.setString("JOUER");
+    _texteJouer.setPosition(sf::Vector2f(LARGEUR_JEU/3, HAUTEUR_JEU/3));
+    bb = _texteJouer.getGlobalBounds();
+    _texteJouer.setScale(LARGEUR_BOUTON/bb.width, HAUTEUR_BOUTON/bb.height);
+    _texteJouer.setColor(sf::Color::Black);
+    _boutonJouer.setPosition(_texteJouer.getPosition());
+    _boutonJouer.setSize(sf::Vector2f(LARGEUR_BOUTON, HAUTEUR_BOUTON*2));
+    _boutonJouer.setFillColor(sf::Color::Green);
+    _boutonJouer.setOutlineThickness(2);
+    _boutonJouer.setOutlineColor(sf::Color::Black);
+
+    _texteQuitter.setFont(_font);
+    _texteQuitter.setString("QUITTER");
+    _texteQuitter.setPosition(sf::Vector2f(_boutonJouer.getPosition().x, _boutonJouer.getPosition().y+_boutonJouer.getGlobalBounds().height + DECALAGE_BOUTONS));
+    bb = _texteQuitter.getGlobalBounds();
+    _texteQuitter.setScale(LARGEUR_BOUTON/bb.width, HAUTEUR_BOUTON/bb.height);
+    _texteQuitter.setColor(sf::Color::Black);
+    _boutonQuitter.setPosition(_texteQuitter.getPosition());
+    _boutonQuitter.setSize(sf::Vector2f(LARGEUR_BOUTON, HAUTEUR_BOUTON*2));
+    _boutonQuitter.setFillColor(sf::Color::Green);
+    _boutonQuitter.setOutlineThickness(2);
+    _boutonQuitter.setOutlineColor(sf::Color::Black);
 }
 
 View::~View(){
@@ -132,30 +153,39 @@ View::~View(){
 void View::draw(){
     _window->clear();
 
-//    while(_ )
     _backGroundArriere->draw(_window);
     _backGroundAvant->draw(_window);
-    _balleGraphique->draw(_window);
 
-    _window->draw(_cadreBarreVie);
-    _barreVie.setSize(sf::Vector2f(2*_model->getPvBalle(), LARGEUR_BARRE_VIE));
-    _window->draw(_barreVie);
+    if(_dansMenu) {
+        _window->draw(_boutonJouer);
+        _window->draw(_texteJouer);
+        _window->draw(_boutonQuitter);
+        _window->draw(_texteQuitter);
+    }
 
-    _texteScore.setString("SCORE : " + to_string(_model->getScore()));
-    _window->draw(_texteScore);
+    else {
+        _balleGraphique->draw(_window);
 
-    for(auto element : _model->recupererElements()) {
-        if(element->getType() == "Obstacle") {
-            _obstacleGraphique->setPosition(element->getX(), element->getY());
-            _obstacleGraphique->draw(_window);
-        }
-        else if(element->getType() == "Piece") {
-            _pieceGraphique->setPosition(element->getX(), element->getY());
-            _pieceGraphique->draw(_window);
-        }
-        else if(element->getType() == "Medikit") {
-            _medikitGraphique->setPosition(element->getX(), element->getY());
-            _medikitGraphique->draw(_window);
+        _window->draw(_cadreBarreVie);
+        _barreVie.setSize(sf::Vector2f(2*_model->getPvBalle(), LARGEUR_BARRE_VIE));
+        _window->draw(_barreVie);
+
+        _texteScore.setString("SCORE : " + to_string(_model->getScore()));
+        _window->draw(_texteScore);
+
+        for(auto element : _model->recupererElements()) {
+            if(element->getType() == "Obstacle") {
+                _obstacleGraphique->setPosition(element->getX(), element->getY());
+                _obstacleGraphique->draw(_window);
+            }
+            else if(element->getType() == "Piece") {
+                _pieceGraphique->setPosition(element->getX(), element->getY());
+                _pieceGraphique->draw(_window);
+            }
+            else if(element->getType() == "Medikit") {
+                _medikitGraphique->setPosition(element->getX(), element->getY());
+                _medikitGraphique->draw(_window);
+            }
         }
     }
 
@@ -176,7 +206,7 @@ bool View::treatEvents(){
                 cout << endl << "Jeu quitté" << endl;
                 result = false;
             }
-            if (event.type == sf::Event::KeyPressed)
+            else if (event.type == sf::Event::KeyPressed)
             {
                 if(event.key.code == sf::Keyboard::Left) {
                     _model->deplacerBalle(true);
@@ -193,14 +223,42 @@ bool View::treatEvents(){
                     _model->stopperBalle();
                 }
             }
+            else if(event.type == sf::Event::MouseButtonPressed && event.key.code == sf::Mouse::Left && _dansMenu) {
+                if(boutonClique(_boutonJouer)) {
+                    _dansMenu = false;
+                }
+                else if (boutonClique(_boutonQuitter)) {
+                    _window->close();
+                    cout << endl << "Jeu quitté" << endl;
+                    result = false;
+                }
+            }
         }
     }
+    if(!_dansMenu)
+        _model->nextStep();
     return result;
 }
 
 void View::synchronize()
 {
     _balleGraphique->setPosition(_model->getBalleX(), _model->getBalleY());
+}
+
+bool View::boutonClique(sf::RectangleShape bouton) const
+{
+    int sourisX = sf::Mouse::getPosition().x;
+    int sourisY = sf::Mouse::getPosition().y;
+    int boutonX = bouton.getPosition().x;
+    int boutonY = bouton.getPosition().y;
+    int boutonW = bouton.getGlobalBounds().width;
+    int boutonH = bouton.getGlobalBounds().height;
+
+    cout << "SOURIS (" << sourisX << ", " << sourisY << ")" << endl << "BOUTON (" << boutonX << " ," << boutonY << ", " << boutonW << ", " << boutonH << ")" << endl;
+
+    if(sourisX > boutonX && sourisX < boutonX+boutonW && sourisY > boutonY && sourisY < boutonY+boutonH)
+        return true;
+    return false;
 }
 
 void View::imageTrouvee(string chemin)

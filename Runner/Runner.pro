@@ -17,8 +17,7 @@ SOURCES += main.cpp \
     View.cpp \
     GraphicElement.cpp \
     SlidingBackground.cpp \
-    animatedgraphicelement.cpp \
-    ecranintroduction.cpp
+    AnimatedGraphicElement.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -33,6 +32,5 @@ HEADERS += \
     View.h \
     GraphicElement.h \
     SlidingBackground.h \
-    animatedgraphicelement.h \
-    ecranintroduction.h
+    AnimatedGraphicElement.h
 

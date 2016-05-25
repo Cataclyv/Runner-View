@@ -1,4 +1,4 @@
-#include "animatedgraphicelement.h"
+#include "AnimatedGraphicElement.h"
 #include <SFML/Graphics.hpp>
 
 AnimatedGraphicElement::AnimatedGraphicElement(const std::vector<sf::IntRect>& clipRects, sf::Texture &image, int x, int y, int w, int h)

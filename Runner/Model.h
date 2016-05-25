@@ -7,9 +7,9 @@
 #include "Bonus.h"
 #include <set>
 
-const int LARGEUR_MODEL = 800;
-const int HAUTEUR_MODEL = 600;
-const int HAUTEUR_SAUT = HAUTEUR_MODEL/3;
+const int LARGEUR_JEU = 800;
+const int HAUTEUR_JEU = 600;
+const int HAUTEUR_SAUT = HAUTEUR_JEU/3;
 const int HAUTEUR_SOL = 500;
 const int TAILLE_ELEMENTS = 40;
 const int VITESSE_BALLE = 10;   // Vitesse de déplacement horizontal
@@ -19,7 +19,6 @@ const int MAX_ELEMENTS = 20; // Nombre d'éléments présents à la génération
 const int ECART_BORNE = 300;
 const int ECART_MIN = 50;
 const int DEGATS_OBSTACLE = 25;
-const int SOINS = 25;
 
 
 class Model
@@ -31,7 +30,10 @@ private :
     Balle *_balle;
     std::set<MovableElement*> _elements;
     Score *_scoreJoueur;
+
+    /*** STATS OBJETS ***/
     int _degatsObstacle;
+    int _soins;
 
 public:
     Model();

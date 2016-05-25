@@ -2,8 +2,7 @@
 
 using namespace std;
 
-Model::Model() : _ecart{50}, _vitesseJeu{VITESSE_INITIALE_JEU}, _w{LARGEUR_MODEL}, _h {HAUTEUR_MODEL}, _degatsObstacle{25}
-{
+Model::Model() : _ecart{50}, _vitesseJeu{VITESSE_INITIALE_JEU}, _w{LARGEUR_JEU}, _h {HAUTEUR_JEU}, _degatsObstacle{25}, _soins{25} {
     _balle = new Balle(HAUTEUR_SOL);
     cout << "Balle crée aux coordonnées (" << _balle->getX() << ", " << _balle->getY() << ")" << endl << endl;
     _scoreJoueur = new Score();
@@ -48,21 +47,16 @@ void Model::ajouterElementAleatoire(int xCourant)
 bool Model::nextStep() {
     bool continuer = true;
 
-    int nbElementSupprimes = 0;
     for(auto e : _elements) {
         /*** Si le MovableElement sort du jeu ***/
         if(!e->enJeu()) {
             cout << "SCORE COURANT -> " << _scoreJoueur->score() << endl;
             _elements.erase(e);
             delete e;
-            nbElementSupprimes++;
+            rajouterElement(false);
         }
         else
             e->move();
-    }
-    for(int nb=0 ; nb < nbElementSupprimes ; nb++)
-    {
-        rajouterElement(false);
     }
 
     bougerBalle();
@@ -77,7 +71,7 @@ bool Model::nextStep() {
             }
             else {
                 if(e->getType() == "Medikit") {
-                    _balle->setPv(_balle->getPv()+SOINS);
+                    _balle->setPv(_balle->getPv()+_soins);
                     cout << "Le joueur a ramassé un médikit et est passé à " << _balle->getPv() << " PV" << endl;
                     _scoreJoueur->plusBonus();
                 }
@@ -113,7 +107,7 @@ void Model::rajouterElement(bool debutJeu)
             xAgauche = e->getX();
     }
     if(debutJeu)
-        ajouterElementAleatoire(xAgauche + _ecart + LARGEUR_MODEL);
+        ajouterElementAleatoire(xAgauche + _ecart + LARGEUR_JEU);
     else
         ajouterElementAleatoire(xAgauche + _ecart);
 }

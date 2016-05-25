@@ -17,7 +17,10 @@ const float LARGEUR_BOUTON = 200.f;
 const float HAUTEUR_BOUTON = 50.f;
 const float DECALAGE_BOUTONS = 50;
 
+const int TEMPS_GAME_OVER = 6;
+
 const std::string FONT = "polices/Antique_Olive.ttf";
+const std::string IMG_IUT = "images/logo_iut.jpg";
 const std::string IMG_BALLE = "images/ball.png";
 const std::string IMG_BACKGROUND_FRONT = "images/city_1.png";
 const std::string IMG_BACKGROUND_BACK = "images/city_2.png";
@@ -31,9 +34,14 @@ private :
     int _w, _h;
     sf::RenderWindow *_window;
     Model *_model;
+
+    /*** BOOLEENS ***/
     bool _dansMenu;
+    bool _finJeu;
+    bool _reinit;
 
     /*** TEXTURES ***/
+    sf::Texture _textureLogo;
     sf::Texture _textureBackGroundAvant;
     sf::Texture _textureBackGroundArriere;
     sf::Texture _textureBalle;
@@ -47,9 +55,11 @@ private :
     sf::Text _textePv;
     sf::Text _texteJouer;
     sf::Text _texteQuitter;
+    sf::Text _texteFin;
 
     /*** ELEMENTS GRAPHIQUES ***/
     SlidingBackground *_backGroundAvant, *_backGroundArriere;
+    GraphicElement *_logoGraphique;
     GraphicElement *_balleGraphique;
     GraphicElement *_obstacleGraphique;
     GraphicElement *_pieceGraphique;
@@ -63,7 +73,7 @@ private :
 
     /*** GESTION DU TEMPS ***/
     sf::Clock _clock;
-    sf::Time _time;
+    sf::Time _timeFin;
 
 public:
     View(Model *model);

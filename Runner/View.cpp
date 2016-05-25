@@ -2,12 +2,12 @@
 
 using namespace std;
 
-View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dansMenu{true}
+View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dansMenu{true}, _finJeu{false}, _reinit{false}
 {
     _window = new sf::RenderWindow(sf::VideoMode(_w, _h, 32), "Runner", sf::Style::Close);
     _window->setKeyRepeatEnabled(true);
 
-    _time = _clock.restart();
+    _timeFin = _clock.restart();
 
     /*** CREATION FONT ***/
     if(!_font.loadFromFile(FONT))
@@ -42,7 +42,7 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
         _balleGraphique = new GraphicElement(_textureBalle, _model->getBalleX(), _model->getBalleY(), 20, 20);
 
         /*** Redimensionne l'image de la balle ***/
-        sf::FloatRect bb = _balleGraphique->getLocalBounds();
+        bb = _balleGraphique->getLocalBounds();
         float width_factor = 50/bb.width;
         float height_factor = 50/bb.height;
         _balleGraphique->setScale(width_factor, height_factor);
@@ -103,6 +103,12 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
     _texteScore.setScale(100/bb.width, 20/bb.height);
     _texteScore.setColor(sf::Color::Black);
 
+    /*** CREATION TEXTE -> GAME OVER ***/
+    _texteFin.setFont(_font);
+    _texteFin.setString("GAME OVER \nRETOUR AU MENU DANS 5...");
+    _texteFin.setPosition(sf::Vector2f(300, 300));
+    _texteFin.setColor(sf::Color::Black);
+
     /* ************ *
     * CREATION MENU *
     * ************ */
@@ -131,9 +137,19 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
     _boutonQuitter.setFillColor(sf::Color::Green);
     _boutonQuitter.setOutlineThickness(2);
     _boutonQuitter.setOutlineColor(sf::Color::Black);
+
+    /*** LOGO IUT ***/
+    if(!_textureLogo.loadFromFile(IMG_IUT)) {
+        imageErreur(IMG_IUT);
+    }
+    else {
+        _logoGraphique = new GraphicElement(_textureLogo, 0, 0, 10, 10);
+    }
 }
 
 View::~View(){
+    if(_logoGraphique != NULL)
+        delete _logoGraphique;
     if(_medikitGraphique != NULL)
         delete _medikitGraphique;
     if(_pieceGraphique != NULL)
@@ -146,6 +162,8 @@ View::~View(){
         delete _backGroundArriere;
     if(_backGroundAvant != NULL)
         delete _backGroundAvant;
+    if(_model != NULL)
+        delete _model;
     if(_window!= NULL)
         delete _window;
 }
@@ -157,10 +175,24 @@ void View::draw(){
     _backGroundAvant->draw(_window);
 
     if(_dansMenu) {
+        _logoGraphique->draw(_window);
         _window->draw(_boutonJouer);
         _window->draw(_texteJouer);
         _window->draw(_boutonQuitter);
         _window->draw(_texteQuitter);
+    }
+
+    else if(_finJeu) {
+        int temps_restant = TEMPS_GAME_OVER - _timeFin.asSeconds();
+        _texteFin.setString("GAME OVER \nRETOUR AU MENU DANS " + to_string(temps_restant) + "...");
+        _window->draw(_texteFin);
+
+        _timeFin = _clock.getElapsedTime();
+
+        if(_timeFin.asSeconds() > TEMPS_GAME_OVER-1) {
+            _finJeu = false;
+            _dansMenu = true;
+        }
     }
 
     else {
@@ -223,7 +255,7 @@ bool View::treatEvents(){
                     _model->stopperBalle();
                 }
             }
-            else if(event.type == sf::Event::MouseButtonPressed && event.key.code == sf::Mouse::Left && _dansMenu) {
+            else if(event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && _dansMenu) {
                 if(boutonClique(_boutonJouer)) {
                     _dansMenu = false;
                 }
@@ -235,8 +267,18 @@ bool View::treatEvents(){
             }
         }
     }
-    if(!_dansMenu)
-        _model->nextStep();
+    if(!_dansMenu && !_finJeu) {
+        _reinit = false;
+        bool jeu = _model->nextStep();
+        synchronize();
+        if(!jeu) {
+            _finJeu = true;
+            if(!_reinit) {
+                _model = new Model();
+                _timeFin = _clock.restart();
+            }
+        }
+    }
     return result;
 }
 
@@ -247,14 +289,14 @@ void View::synchronize()
 
 bool View::boutonClique(sf::RectangleShape bouton) const
 {
-    int sourisX = sf::Mouse::getPosition().x;
-    int sourisY = sf::Mouse::getPosition().y;
+    int sourisX = sf::Mouse::getPosition().x - _window->getPosition().x;
+    int sourisY = sf::Mouse::getPosition().y - _window->getPosition().y;
     int boutonX = bouton.getPosition().x;
     int boutonY = bouton.getPosition().y;
     int boutonW = bouton.getGlobalBounds().width;
     int boutonH = bouton.getGlobalBounds().height;
 
-    cout << "SOURIS (" << sourisX << ", " << sourisY << ")" << endl << "BOUTON (" << boutonX << " ," << boutonY << ", " << boutonW << ", " << boutonH << ")" << endl;
+    //cout << "SOURIS (" << sourisX << ", " << sourisY << ")" << endl << "BOUTON (" << boutonX << " ," << boutonY << ", " << boutonW << ", " << boutonH << ")" << endl;
 
     if(sourisX > boutonX && sourisX < boutonX+boutonW && sourisY > boutonY && sourisY < boutonY+boutonH)
         return true;

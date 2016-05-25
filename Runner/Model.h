@@ -18,7 +18,6 @@ const int COEFF_GRAVITE = 3;    // Utilisé pour la vitesse de saut
 const int MAX_ELEMENTS = 20; // Nombre d'éléments présents à la génération et au cours du jeu
 const int ECART_BORNE = 300;
 const int ECART_MIN = 50;
-const int DEGATS_OBSTACLE = 25;
 
 
 class Model
@@ -31,7 +30,7 @@ private :
     std::set<MovableElement*> _elements;
     Score *_scoreJoueur;
 
-    /*** STATS OBJETS ***/
+    /*** STATS OBJETS -> PAS DE CONSTANTES POUR POUVOIR ETRE POTENTIELLEMENT MODIFIES DANS LE JEU (BOUTIQUE) ***/
     int _degatsObstacle;
     int _soins;
 

@@ -12,7 +12,6 @@ int main()
 
     while(_view.treatEvents()){
       _view.draw();
-      _view.synchronize();
     }
 
     cout << endl;

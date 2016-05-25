@@ -32,9 +32,9 @@ void Model::ajouterElementAleatoire(int xCourant)
 {
     int determination_element = rand()%100;
 
-    if(determination_element < 50)
+    if(determination_element < 60)
         _elements.insert(new Obstacle(xCourant, HAUTEUR_SOL-TAILLE_ELEMENTS, TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0));
-    else if(determination_element >= 70 && determination_element < 85) {
+    else {
         int determination_bonus = rand()%100;
 
         if(determination_bonus < 90)

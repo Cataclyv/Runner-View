@@ -12,6 +12,7 @@ private :
 public:
     SlidingBackground(sf::Texture &image, int w, int h, unsigned int vitesse);
     void draw(sf::RenderWindow *window);
+    void setSpeed(float s);
 };
 
 #endif // SLIDINGBACKGROUND_H

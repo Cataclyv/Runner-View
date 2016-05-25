@@ -92,6 +92,7 @@ View::View(Model *model) : _w{VIEW_WIDTH}, _h{VIEW_HEIGHT}, _model{model}
     _cadreBarreVie.setOutlineThickness(1.f);
     _cadreBarreVie.setOutlineColor(sf::Color(0, 0, 0));
 
+
     /*** CREATION TEXTE -> SCORE ***/
     _texteScore.setFont(_font);
     _texteScore.setString("SCORE : " + to_string(_model->getScore()));

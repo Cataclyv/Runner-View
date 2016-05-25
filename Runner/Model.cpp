@@ -33,7 +33,7 @@ void Model::ajouterElementAleatoire(int xCourant)
 {
     int determination_element = rand()%100;
 
-    if(determination_element < 60)
+    if(determination_element < 50)
         _elements.insert(new Obstacle(xCourant, HAUTEUR_SOL-TAILLE_ELEMENTS, TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0));
     else if(determination_element >= 70 && determination_element < 85) {
         int determination_bonus = rand()%100;
@@ -119,8 +119,13 @@ void Model::rajouterElement(bool debutJeu)
 }
 
 void Model::deplacerBalle(bool aGauche) {
-    if(aGauche)
+    int vitesse_saut = -VITESSE_BALLE/2;
+    if(aGauche && _balle->getEnChute() && _balle->getEnSaut())
+        _balle->setDx(vitesse_saut);
+    else if(aGauche)
         _balle->setDx(-VITESSE_BALLE);
+    else if(!aGauche && _balle->getEnChute() && _balle->getEnSaut())
+        _balle->setDx(-vitesse_saut);
     else
         _balle->setDx(VITESSE_BALLE);
     _balle->move();

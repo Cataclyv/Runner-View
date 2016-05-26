@@ -9,14 +9,12 @@ const int TAILLE = 40;
 
 class Bonus : public MovableElement
 {
-protected:
+private:
     std::string _type;
 public:
     Bonus(int x, int vitesse, std::string type);
 
     void move();
-
-    int getVal() const;
 
     virtual std::string getType() const;
 

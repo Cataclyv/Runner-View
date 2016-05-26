@@ -40,30 +40,30 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
     else {
         imageTrouvee(IMG_BALLE);
         _balleGraphique = new GraphicElement(_textureBalle, _model->getBalleX(), _model->getBalleY(), 20, 20);
-
-        /*** Redimensionne l'image de la balle ***/
-        bb = _balleGraphique->getLocalBounds();
-        float width_factor = 50/bb.width;
-        float height_factor = 50/bb.height;
-        _balleGraphique->setScale(width_factor, height_factor);
+        _balleGraphique->resize(_model->getBalleW(), _model->getBalleH());
     }
 
-    /*** CREATION SPRITE OBSTACLE ***/
-    if(!_textureObstacle.loadFromFile(IMG_OBSTACLE)) {
-        imageErreur(IMG_OBSTACLE);
+    /*** IMPORTATION TEXTURES OBSTACLES ***/
+    if(!_textureObstacleBase.loadFromFile(IMG_OBSTACLE_BASE)) {
+        imageErreur(IMG_OBSTACLE_BASE);
     }
     else {
-        imageTrouvee(IMG_OBSTACLE);
-        _obstacleGraphique = new GraphicElement(_textureObstacle, 0, 0, TAILLE_ELEMENTS, TAILLE_ELEMENTS);
+        imageTrouvee(IMG_OBSTACLE_BASE);
+        _obstacleGraphique = new GraphicElement(_textureObstacleBase, 0, 0, TAILLE_ELEMENTS, TAILLE_ELEMENTS);
+    }
 
-        /*** Redimensionne l'image de l'obstacle ***/
-        /*
-        sf::FloatRect frO = _balleGraphique->getLocalBounds();
-        float width_factor_O = 40/frO.width;
-        float height_factor_O = 40/frO.height;
-        _obstacleGraphique->setScale(width_factor_O, height_factor_O);
-        */
+    if(!_textureObstacleAir.loadFromFile(IMG_OBSTACLE_AIR)) {
+        imageErreur(IMG_OBSTACLE_AIR);
+    }
+    else {
+        imageTrouvee(IMG_OBSTACLE_AIR);
+    }
 
+    if(!_textureObstacleGrand.loadFromFile(IMG_OBSTACLE_GRAND)) {
+        imageErreur(IMG_OBSTACLE_GRAND);
+    }
+    else {
+        imageTrouvee(IMG_OBSTACLE_GRAND);
     }
 
     /*** CREATION SPRITE PIECE ***/
@@ -162,8 +162,6 @@ View::~View(){
         delete _backGroundArriere;
     if(_backGroundAvant != NULL)
         delete _backGroundAvant;
-    if(_model != NULL)
-        delete _model;
     if(_window!= NULL)
         delete _window;
 }
@@ -184,7 +182,7 @@ void View::draw(){
 
     else if(_finJeu) {
         int temps_restant = TEMPS_GAME_OVER - _timeFin.asSeconds();
-        _texteFin.setString("GAME OVER \nRETOUR AU MENU DANS " + to_string(temps_restant) + "...");
+        _texteFin.setString("           GAME OVER \nRETOUR AU MENU DANS " + to_string(temps_restant) + "...");
         _window->draw(_texteFin);
 
         _timeFin = _clock.getElapsedTime();
@@ -206,7 +204,21 @@ void View::draw(){
         _window->draw(_texteScore);
 
         for(auto element : _model->recupererElements()) {
-            if(element->getType() == "Obstacle") {
+            if(element->getType() == OBSTACLE_BASE) {
+                _obstacleGraphique->setTexture(_textureObstacleBase);
+                _obstacleGraphique->resize(element->getW(), element->getH());
+                _obstacleGraphique->setPosition(element->getX(), element->getY());
+                _obstacleGraphique->draw(_window);
+            }
+            else if(element->getType() == OBSTACLE_AIR) {
+                _obstacleGraphique->setTexture(_textureObstacleAir);
+                _obstacleGraphique->resize(element->getW(), element->getH());
+                _obstacleGraphique->setPosition(element->getX(), element->getY());
+                _obstacleGraphique->draw(_window);
+            }
+            else if(element->getType() == OBSTACLE_GRAND) {
+                _obstacleGraphique->setTexture(_textureObstacleGrand);
+                _obstacleGraphique->resize(element->getW(), element->getH());
                 _obstacleGraphique->setPosition(element->getX(), element->getY());
                 _obstacleGraphique->draw(_window);
             }

@@ -24,7 +24,9 @@ const std::string IMG_IUT = "images/logo_iut.jpg";
 const std::string IMG_BALLE = "images/ball.png";
 const std::string IMG_BACKGROUND_FRONT = "images/city_1.png";
 const std::string IMG_BACKGROUND_BACK = "images/city_2.png";
-const std::string IMG_OBSTACLE = "images/obstacle.png";
+const std::string IMG_OBSTACLE_BASE = "images/obstacle_base.png";
+const std::string IMG_OBSTACLE_AIR = "images/obstacle_air.png";
+const std::string IMG_OBSTACLE_GRAND = "images/obstacle_grand.png";
 const std::string IMG_PIECE = "images/piece.png";
 const std::string IMG_MEDIKIT = "images/medikit.png";
 
@@ -45,7 +47,9 @@ private :
     sf::Texture _textureBackGroundAvant;
     sf::Texture _textureBackGroundArriere;
     sf::Texture _textureBalle;
-    sf::Texture _textureObstacle;
+    sf::Texture _textureObstacleBase;
+    sf::Texture _textureObstacleAir;
+    sf::Texture _textureObstacleGrand;
     sf::Texture _texturePiece;
     sf::Texture _textureMedikit;
 

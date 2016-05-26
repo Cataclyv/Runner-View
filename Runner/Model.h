@@ -19,6 +19,12 @@ const int MAX_ELEMENTS = 20; // Nombre d'éléments présents à la génération
 const int ECART_BORNE = 300;
 const int ECART_MIN = 50;
 
+const std::string OBSTACLE_BASE = "ObstacleBase";
+const std::string OBSTACLE_AIR = "ObstacleAir";
+const std::string OBSTACLE_GRAND = "ObstacleGrand";
+
+const bool VERBOSE = true; // ACTIVE OU NON L'AFFICHAGE TERMINAL
+
 
 class Model
 {
@@ -52,6 +58,8 @@ public:
 
     int getBalleX() const;
     int getBalleY() const;
+    int getBalleW() const;
+    int getBalleH() const;
     int getPvBalle() const;
     int getVitesseJeu() const;
     int getScore() const;

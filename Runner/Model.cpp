@@ -4,7 +4,8 @@ using namespace std;
 
 Model::Model() : _ecart{50}, _vitesseJeu{VITESSE_INITIALE_JEU}, _w{LARGEUR_JEU}, _h {HAUTEUR_JEU}, _degatsObstacle{25}, _soins{25} {
     _balle = new Balle(HAUTEUR_SOL);
-    cout << "Balle crée aux coordonnées (" << _balle->getX() << ", " << _balle->getY() << ")" << endl << endl;
+    if(VERBOSE)
+        cout << "Balle crée aux coordonnées (" << _balle->getX() << ", " << _balle->getY() << ")" << endl << endl;
     _scoreJoueur = new Score();
 
     /*** REMPLISSAGE MODELE ***/
@@ -25,15 +26,23 @@ void Model::calculerEcart()
 {
     srand(time(NULL)+_ecart);
     _ecart = (rand()%ECART_BORNE) + ECART_MIN;
-    //cout << "ECART -> " << _ecart << endl;
+    if(VERBOSE)
+        cout << "ECART -> " << _ecart << endl;
 }
 
 void Model::ajouterElementAleatoire(int xCourant)
 {
     int determination_element = rand()%100;
 
-    if(determination_element < 60)
-        _elements.insert(new Obstacle(xCourant, HAUTEUR_SOL-TAILLE_ELEMENTS, TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0));
+    if(determination_element < 60) {
+        int determination_obstacle = rand()%100;
+        if(determination_obstacle < 70)
+            _elements.insert(new Obstacle(xCourant, HAUTEUR_SOL-TAILLE_ELEMENTS, TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0, OBSTACLE_BASE));
+        else if(determination_obstacle < 90)
+            _elements.insert(new Obstacle(xCourant, HAUTEUR_SOL-3*TAILLE_ELEMENTS, TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0, OBSTACLE_AIR));
+        else
+            _elements.insert(new Obstacle(xCourant, HAUTEUR_SOL-2*TAILLE_ELEMENTS, 2*TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0, OBSTACLE_GRAND));
+    }
     else {
         int determination_bonus = rand()%100;
 
@@ -47,16 +56,23 @@ void Model::ajouterElementAleatoire(int xCourant)
 bool Model::nextStep() {
     bool continuer = true;
 
+    bool elementSupprime = false;
     for(auto e : _elements) {
         /*** Si le MovableElement sort du jeu ***/
         if(!e->enJeu()) {
-            cout << "SCORE COURANT -> " << _scoreJoueur->score() << endl;
+            if(VERBOSE)
+                cout << "SCORE COURANT -> " << _scoreJoueur->score() << endl;
             _elements.erase(e);
             delete e;
-            rajouterElement(false);
+            elementSupprime = true;
         }
         else
             e->move();
+    }
+    if(elementSupprime) {
+        rajouterElement(false);
+        if(VERBOSE)
+            cout << "TAILLE LISTE >>> " << _elements.size() << endl;
     }
 
     bougerBalle();
@@ -65,19 +81,22 @@ bool Model::nextStep() {
     MovableElement *elementTouche = nullptr;
     for(auto e : _elements) {
         if(e->collision(_balle)) {
-            if(e->getType() == "Obstacle") {
+            if(e->getType() == OBSTACLE_BASE || e->getType() == OBSTACLE_AIR || e->getType() == OBSTACLE_GRAND) {
                 _balle->setPv(_balle->getPv()-_degatsObstacle);
-                cout << "Le joueur perd " << _degatsObstacle << " PV ; il lui en reste " << _balle->getPv() << endl;
+                if(VERBOSE)
+                    cout << "Le joueur perd " << _degatsObstacle << " PV ; il lui en reste " << _balle->getPv() << endl;
             }
             else {
                 if(e->getType() == "Medikit") {
                     _balle->setPv(_balle->getPv()+_soins);
-                    cout << "Le joueur a ramassé un médikit et est passé à " << _balle->getPv() << " PV" << endl;
+                    if(VERBOSE)
+                        cout << "Le joueur a ramassé un médikit et est passé à " << _balle->getPv() << " PV" << endl;
                     _scoreJoueur->plusBonus();
                 }
 
                 else if(e->getType() == "Piece") {
-                    cout << "Le joueur a ramassé une pièce" << endl;
+                    if(VERBOSE)
+                        cout << "Le joueur a ramassé une pièce" << endl;
                     _scoreJoueur->plusPiece();
                 }
             }
@@ -88,6 +107,8 @@ bool Model::nextStep() {
         _elements.erase(elementTouche);
         delete elementTouche;
         rajouterElement(false);
+        if(VERBOSE)
+            cout << "TAILLE LISTE >>> " << _elements.size() << endl;
     }
 
     /*** Détection mort du joueur ***/
@@ -133,6 +154,16 @@ int Model::getBalleX() const
 int Model::getBalleY() const
 {
     return _balle->getY();
+}
+
+int Model::getBalleW() const
+{
+    return _balle->getW();
+}
+
+int Model::getBalleH() const
+{
+    return _balle->getH();
 }
 
 int Model::getPvBalle() const

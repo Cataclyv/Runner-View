@@ -10,6 +10,7 @@ private :
 public:
     GraphicElement(sf::Texture &image, int x, int y, int w, int h);
     void draw(sf::RenderWindow *window);
+    void resize(int nouvelleLargeur, int nouvelleHauteur);
 
     int getW() const;
     int getH() const;

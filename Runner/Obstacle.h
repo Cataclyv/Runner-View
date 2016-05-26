@@ -7,9 +7,9 @@
 class Obstacle : public MovableElement
 {
 private:
-    int _dommages;
+    std::string _type;
 public:
-    Obstacle(int x, int y, int h, int w, int dx, int dy);
+    Obstacle(int x, int y, int h, int w, int dx, int dy, std::string type);
     std::string getType() const;
 };
 

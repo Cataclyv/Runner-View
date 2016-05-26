@@ -25,32 +25,45 @@ Model::~Model() {
 void Model::calculerEcart()
 {
     srand(time(NULL)+_ecart);
-    _ecart = (rand()%ECART_BORNE) + ECART_MIN;
+    _ecart = (rand()%ECART_BORNE) + TAILLE_ELEMENTS + ECART_MIN;
     if(VERBOSE)
         cout << "ECART -> " << _ecart << endl;
 }
 
 void Model::ajouterElementAleatoire(int xCourant)
 {
+    MovableElement *nouvelElement;
     int determination_element = rand()%100;
 
     if(determination_element < 60) {
         int determination_obstacle = rand()%100;
-        if(determination_obstacle < 70)
-            _elements.insert(new Obstacle(xCourant, HAUTEUR_SOL-TAILLE_ELEMENTS, TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0, OBSTACLE_BASE));
-        else if(determination_obstacle < 90)
-            _elements.insert(new Obstacle(xCourant, HAUTEUR_SOL-3*TAILLE_ELEMENTS, TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0, OBSTACLE_AIR));
-        else
-            _elements.insert(new Obstacle(xCourant, HAUTEUR_SOL-2*TAILLE_ELEMENTS, 2*TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0, OBSTACLE_GRAND));
+        if(determination_obstacle < 70) {
+            nouvelElement = new Obstacle(xCourant, HAUTEUR_SOL-TAILLE_ELEMENTS, TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0, OBSTACLE_BASE);
+            _elements.insert(nouvelElement);
+        }
+        else if(determination_obstacle < 90) {
+            nouvelElement = new Obstacle(xCourant, HAUTEUR_SOL-3*TAILLE_ELEMENTS, TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0, OBSTACLE_AIR);
+            _elements.insert(nouvelElement);
+        }
+        else {
+            nouvelElement = new Obstacle(xCourant, HAUTEUR_SOL-2*TAILLE_ELEMENTS, 2*TAILLE_ELEMENTS, 2*TAILLE_ELEMENTS, -_vitesseJeu, 0, OBSTACLE_GRAND);
+            _elements.insert(nouvelElement);
+        }
     }
     else {
         int determination_bonus = rand()%100;
 
-        if(determination_bonus < 90)
-            _elements.insert(new Bonus(xCourant, -_vitesseJeu, "Piece"));
-        else
-            _elements.insert(new Bonus(xCourant, -_vitesseJeu, "Medikit"));
+        if(determination_bonus < 90) {
+            nouvelElement = new Bonus(xCourant,TAILLE_ELEMENTS, _vitesseJeu, PIECE);
+            _elements.insert(nouvelElement);
+        }
+        else {
+            nouvelElement = new Bonus(xCourant,TAILLE_ELEMENTS, _vitesseJeu, MEDIKIT);
+            _elements.insert(nouvelElement);
+        }
     }
+    if(VERBOSE)
+        nouvelElement->verbose();
 }
     // Quand le jeu sera Game Over, retourne FALSE
 bool Model::nextStep() {
@@ -75,7 +88,7 @@ bool Model::nextStep() {
             cout << "TAILLE LISTE >>> " << _elements.size() << endl;
     }
 
-    bougerBalle();
+    gestionSautBalle();
 
     /*** GESTION COLLISION ***/
     MovableElement *elementTouche = nullptr;
@@ -87,14 +100,14 @@ bool Model::nextStep() {
                     cout << "Le joueur perd " << _degatsObstacle << " PV ; il lui en reste " << _balle->getPv() << endl;
             }
             else {
-                if(e->getType() == "Medikit") {
+                if(e->getType() == MEDIKIT) {
                     _balle->setPv(_balle->getPv()+_soins);
                     if(VERBOSE)
                         cout << "Le joueur a ramassé un médikit et est passé à " << _balle->getPv() << " PV" << endl;
                     _scoreJoueur->plusBonus();
                 }
 
-                else if(e->getType() == "Piece") {
+                else if(e->getType() == PIECE) {
                     if(VERBOSE)
                         cout << "Le joueur a ramassé une pièce" << endl;
                     _scoreJoueur->plusPiece();
@@ -134,14 +147,9 @@ void Model::rajouterElement(bool debutJeu)
 }
 
 void Model::deplacerBalle(bool aGauche) {
-    int vitesse_saut = -VITESSE_BALLE/2;
-    if(aGauche && _balle->getEnChute() && _balle->getEnSaut())
-        _balle->setDx(vitesse_saut);
-    else if(aGauche)
+    if(aGauche && !_balle->getEnSaut())
         _balle->setDx(-VITESSE_BALLE);
-    else if(!aGauche && _balle->getEnChute() && _balle->getEnSaut())
-        _balle->setDx(-vitesse_saut);
-    else
+    else if(!aGauche && !_balle->getEnSaut())
         _balle->setDx(VITESSE_BALLE);
     _balle->move();
 }
@@ -191,9 +199,15 @@ std::set<MovableElement*> Model::recupererElements() const
     return _elements;
 }
 
+void Model::ajouterTempsAuScore()
+{
+    _scoreJoueur->plusTemps();
+}
+
 void Model::stopperBalle()
 {
-    _balle->setDx(0);
+    if(!_balle->getEnSaut())
+        _balle->setDx(0);
 }
 
 void Model::sautBalle()
@@ -201,7 +215,7 @@ void Model::sautBalle()
     _balle->setEnSaut(true);
 }
 
-void Model::bougerBalle()
+void Model::gestionSautBalle()
 {
     if(_balle->getEnSaut() == true) {
         if(_balle->getEnChute() == false) {
@@ -216,6 +230,7 @@ void Model::bougerBalle()
                 _balle->setEnChute(false);
                 _balle->setEnSaut(false);
                 _balle->setDy(0);
+                _balle->setDx(0);
                 _balle->setY(HAUTEUR_SOL-_balle->getH());
             }
         }

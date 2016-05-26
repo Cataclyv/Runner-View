@@ -6,10 +6,6 @@ Balle::Balle(int hauteur)
     _y = hauteur-_w;
 }
 
-Balle::~Balle() {
-
-}
-
 void Balle::move()
 {
     bool deplacable = true;
@@ -18,7 +14,6 @@ void Balle::move()
     if(deplacable)
         _x += _dx;
     _y += _dy;
-    //std::cout << "ballY -> " << _y << std::endl;
 }
 
 int Balle::getPv() const {

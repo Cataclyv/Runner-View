@@ -1,15 +1,12 @@
 #include "MovableElement.h"
 
+using namespace std;
+
 int MovableElement::_nbME = 0;
 
 MovableElement::MovableElement(int x, int y, int w, int h, int dx, int dy)
     : _id{_nbME++}, _x{x}, _y{y}, _w{w}, _h{h}, _dx{dx}, _dy{dy}
-{
-}
-
-MovableElement::~MovableElement() {
-
-}
+{}
 
 void MovableElement::move()
 {
@@ -74,8 +71,7 @@ bool MovableElement::enJeu() const
 
 bool MovableElement::collision(MovableElement *e) const
 {
-    if(((_x+_w > e->getX()) && (_x+_w < e->getX()+e->getW()) && (_y > e->getY()) && (_y < e->getY()+e->getH())) || ((_y > e->getY()) && (_y < e->getY()+e->getH()) && (_x > e->getX()) && (_x < e->getX()+e->getW()))
-            || ((_x+_w > e->getX()) && (_x+_w < e->getX()+e->getW()) && (_y+_h > e->getY()) && (_y+_h < e->getY()+e->getH())) || ((_y+_h > e->getY()) && (_y+_h < e->getY()+e->getH()) && (_x > e->getX()) && (_x < e->getX()+e->getW())))
+    if(e->getX() <= _x+_w && e->getX()+e->getW() >= _x && e->getY() <= _y+_h && e->getY()+e->getH() >= _y)
             return true;
     return false;
 }
@@ -83,3 +79,6 @@ bool MovableElement::collision(MovableElement *e) const
 std::string MovableElement::getType() const {
     return "Objet inconnu";
 }
+
+void MovableElement::verbose() const
+{}

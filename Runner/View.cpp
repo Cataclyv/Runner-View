@@ -7,7 +7,8 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
     _window = new sf::RenderWindow(sf::VideoMode(_w, _h, 32), "Runner", sf::Style::Close);
     _window->setKeyRepeatEnabled(true);
 
-    _timeFin = _clock.restart();
+    _tempsFin = _horloge.restart();
+    _tempsScore = _horloge.restart();
 
     /*** CREATION FONT ***/
     if(!_font.loadFromFile(FONT))
@@ -43,13 +44,12 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
         _balleGraphique->resize(_model->getBalleW(), _model->getBalleH());
     }
 
-    /*** IMPORTATION TEXTURES OBSTACLES ***/
+    /*** CREATION SPRITE ELEMENTS ***/
     if(!_textureObstacleBase.loadFromFile(IMG_OBSTACLE_BASE)) {
         imageErreur(IMG_OBSTACLE_BASE);
     }
     else {
         imageTrouvee(IMG_OBSTACLE_BASE);
-        _obstacleGraphique = new GraphicElement(_textureObstacleBase, 0, 0, TAILLE_ELEMENTS, TAILLE_ELEMENTS);
     }
 
     if(!_textureObstacleAir.loadFromFile(IMG_OBSTACLE_AIR)) {
@@ -66,21 +66,19 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
         imageTrouvee(IMG_OBSTACLE_GRAND);
     }
 
-    /*** CREATION SPRITE PIECE ***/
     if(!_texturePiece.loadFromFile(IMG_PIECE))
         imageErreur(IMG_BALLE);
     else {
         imageTrouvee(IMG_BALLE);
-        _pieceGraphique = new GraphicElement(_texturePiece, 0, 0, TAILLE_ELEMENTS, TAILLE_ELEMENTS);
     }
 
-    /*** CREATION SPRITE MEDIKIT ***/
     if(!_textureMedikit.loadFromFile(IMG_MEDIKIT))
         imageErreur(IMG_MEDIKIT);
     else {
         imageTrouvee(IMG_MEDIKIT);
-        _medikitGraphique = new GraphicElement(_textureMedikit, 0, 0, TAILLE_ELEMENTS, TAILLE_ELEMENTS);
     }
+    // INITIALISATION //
+    _elementGraphique = new GraphicElement(_textureObstacleBase, 0, 0, TAILLE_ELEMENTS, TAILLE_ELEMENTS);
 
     /*** CREATION BARRE DE VIE ***/
     _barreVie.setPosition(sf::Vector2f(POSITION_BARRE_VIE, POSITION_BARRE_VIE));
@@ -106,17 +104,33 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
     /*** CREATION TEXTE -> GAME OVER ***/
     _texteFin.setFont(_font);
     _texteFin.setString("GAME OVER \nRETOUR AU MENU DANS 5...");
-    _texteFin.setPosition(sf::Vector2f(300, 300));
+    _texteFin.setPosition(sf::Vector2f(250, 250));
     _texteFin.setColor(sf::Color::Black);
 
     /* ************ *
     * CREATION MENU *
     * ************ */
 
+    /*** LOGO IUT ***/
+    if(!_textureLogo.loadFromFile(IMG_IUT)) {
+        imageErreur(IMG_IUT);
+    }
+    else {
+        _logoGraphique = new GraphicElement(_textureLogo, 0, 0, 10, 10);
+    }
+
+    /*** TITRE DU JEU ***/
+    _titre.setFont(_font);
+    _titre.setString("RUNNER");
+    _titre.setPosition(_logoGraphique->getPosition().x+_logoGraphique->getTextureRect().width+150, 5);
+    bb = _titre.getLocalBounds();
+    _titre.setScale(LARGEUR_BOUTON/bb.width, HAUTEUR_BOUTON/bb.height);
+    _titre.setColor(sf::Color::Black);
+
     /*** CREATION BOUTONS ***/
     _texteJouer.setFont(_font);
     _texteJouer.setString("JOUER");
-    _texteJouer.setPosition(sf::Vector2f(LARGEUR_JEU/3, HAUTEUR_JEU/3));
+    _texteJouer.setPosition(sf::Vector2f(_titre.getPosition().x, HAUTEUR_JEU/3));
     bb = _texteJouer.getGlobalBounds();
     _texteJouer.setScale(LARGEUR_BOUTON/bb.width, HAUTEUR_BOUTON/bb.height);
     _texteJouer.setColor(sf::Color::Black);
@@ -137,25 +151,13 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
     _boutonQuitter.setFillColor(sf::Color::Green);
     _boutonQuitter.setOutlineThickness(2);
     _boutonQuitter.setOutlineColor(sf::Color::Black);
-
-    /*** LOGO IUT ***/
-    if(!_textureLogo.loadFromFile(IMG_IUT)) {
-        imageErreur(IMG_IUT);
-    }
-    else {
-        _logoGraphique = new GraphicElement(_textureLogo, 0, 0, 10, 10);
-    }
 }
 
 View::~View(){
     if(_logoGraphique != NULL)
         delete _logoGraphique;
-    if(_medikitGraphique != NULL)
-        delete _medikitGraphique;
-    if(_pieceGraphique != NULL)
-        delete _pieceGraphique;
-    if(_obstacleGraphique != NULL)
-        delete _obstacleGraphique;
+    if(_elementGraphique != NULL)
+        delete _elementGraphique;
     if(_balleGraphique != NULL)
         delete _balleGraphique;
     if(_backGroundArriere != NULL)
@@ -178,16 +180,17 @@ void View::draw(){
         _window->draw(_texteJouer);
         _window->draw(_boutonQuitter);
         _window->draw(_texteQuitter);
+        _window->draw(_titre);
     }
 
     else if(_finJeu) {
-        int temps_restant = TEMPS_GAME_OVER - _timeFin.asSeconds();
+        int temps_restant = TEMPS_GAME_OVER - _tempsFin.asSeconds();
         _texteFin.setString("           GAME OVER \nRETOUR AU MENU DANS " + to_string(temps_restant) + "...");
         _window->draw(_texteFin);
 
-        _timeFin = _clock.getElapsedTime();
+        _tempsFin = _horloge.getElapsedTime();
 
-        if(_timeFin.asSeconds() > TEMPS_GAME_OVER-1) {
+        if(_tempsFin.asSeconds() > TEMPS_GAME_OVER-1) {
             _finJeu = false;
             _dansMenu = true;
         }
@@ -205,34 +208,25 @@ void View::draw(){
 
         for(auto element : _model->recupererElements()) {
             if(element->getType() == OBSTACLE_BASE) {
-                _obstacleGraphique->setTexture(_textureObstacleBase);
-                _obstacleGraphique->resize(element->getW(), element->getH());
-                _obstacleGraphique->setPosition(element->getX(), element->getY());
-                _obstacleGraphique->draw(_window);
+                _elementGraphique->setTexture(_textureObstacleBase);
             }
             else if(element->getType() == OBSTACLE_AIR) {
-                _obstacleGraphique->setTexture(_textureObstacleAir);
-                _obstacleGraphique->resize(element->getW(), element->getH());
-                _obstacleGraphique->setPosition(element->getX(), element->getY());
-                _obstacleGraphique->draw(_window);
+                _elementGraphique->setTexture(_textureObstacleAir);;
             }
             else if(element->getType() == OBSTACLE_GRAND) {
-                _obstacleGraphique->setTexture(_textureObstacleGrand);
-                _obstacleGraphique->resize(element->getW(), element->getH());
-                _obstacleGraphique->setPosition(element->getX(), element->getY());
-                _obstacleGraphique->draw(_window);
+                _elementGraphique->setTexture(_textureObstacleGrand);
             }
-            else if(element->getType() == "Piece") {
-                _pieceGraphique->setPosition(element->getX(), element->getY());
-                _pieceGraphique->draw(_window);
+            else if(element->getType() == PIECE) {
+                _elementGraphique->setTexture(_texturePiece);
             }
-            else if(element->getType() == "Medikit") {
-                _medikitGraphique->setPosition(element->getX(), element->getY());
-                _medikitGraphique->draw(_window);
+            else if(element->getType() == MEDIKIT) {
+                _elementGraphique->setTexture(_textureMedikit);
             }
+            _elementGraphique->resize(element->getW(), element->getH());
+            _elementGraphique->setPosition(element->getX(), element->getY());
+            _elementGraphique->draw(_window);
         }
     }
-
     _window->display();
 }
 
@@ -243,7 +237,6 @@ bool View::treatEvents(){
 
         sf::Event event;
         while (_window->pollEvent(event)) {
-            //cout << "Event detected" << endl;
             if ((event.type == sf::Event::Closed) ||
                     ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))) {
                 _window->close();
@@ -287,7 +280,7 @@ bool View::treatEvents(){
             _finJeu = true;
             if(!_reinit) {
                 _model = new Model();
-                _timeFin = _clock.restart();
+                _tempsFin = _horloge.restart();
             }
         }
     }
@@ -297,6 +290,11 @@ bool View::treatEvents(){
 void View::synchronize()
 {
     _balleGraphique->setPosition(_model->getBalleX(), _model->getBalleY());
+    _tempsScore += _horloge.getElapsedTime();
+    if(_tempsScore.asSeconds() > 10) {
+        _model->ajouterTempsAuScore();
+        _tempsScore = _horloge.restart();
+    }
 }
 
 bool View::boutonClique(sf::RectangleShape bouton) const
@@ -308,7 +306,8 @@ bool View::boutonClique(sf::RectangleShape bouton) const
     int boutonW = bouton.getGlobalBounds().width;
     int boutonH = bouton.getGlobalBounds().height;
 
-    //cout << "SOURIS (" << sourisX << ", " << sourisY << ")" << endl << "BOUTON (" << boutonX << " ," << boutonY << ", " << boutonW << ", " << boutonH << ")" << endl;
+    if(VERBOSE)
+        cout << "SOURIS (" << sourisX << ", " << sourisY << ")" << endl << "BOUTON (" << boutonX << " ," << boutonY << ", " << boutonW << ", " << boutonH << ")" << endl;
 
     if(sourisX > boutonX && sourisX < boutonX+boutonW && sourisY > boutonY && sourisY < boutonY+boutonH)
         return true;
@@ -317,7 +316,8 @@ bool View::boutonClique(sf::RectangleShape bouton) const
 
 void View::imageTrouvee(string chemin)
 {
-    cout << chemin << " -> chargée" << endl;
+    if(VERBOSE)
+        cout << chemin << " -> chargée" << endl;
 }
 
 void View::policeErreur(string chemin)
@@ -327,7 +327,8 @@ void View::policeErreur(string chemin)
 
 void View::policeTrouvee(string chemin)
 {
-    cout << chemin << " -> chargée" << endl;
+    if(VERBOSE)
+        cout << chemin << " -> chargée" << endl;
 }
 
 void View::imageErreur(string chemin)

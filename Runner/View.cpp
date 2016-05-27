@@ -2,13 +2,14 @@
 
 using namespace std;
 
-View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dansMenu{true}, _finJeu{false}, _reinit{false}
+View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dansMenu{false}, _finJeu{false}, _reinit{false}, _dansIntro{true}
 {
     _window = new sf::RenderWindow(sf::VideoMode(_w, _h, 32), "Runner", sf::Style::Close);
     _window->setKeyRepeatEnabled(true);
 
     _tempsFin = _horloge.restart();
     _tempsScore = _horloge.restart();
+    _tempsIntro = _horloge.restart();
 
     /*** CREATION FONT ***/
     if(!_font.loadFromFile(FONT))
@@ -151,6 +152,11 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
     _boutonQuitter.setFillColor(sf::Color::Green);
     _boutonQuitter.setOutlineThickness(2);
     _boutonQuitter.setOutlineColor(sf::Color::Black);
+
+    /*** TEXTE INTRODUCTION ***/
+    _texteIntro.setFont(_font);
+    _texteIntro.setString("Jules Despret et Romain Cremery presentent...");
+    _texteIntro.setPosition(LARGEUR_JEU/11, HAUTEUR_JEU/2);
 }
 
 View::~View(){
@@ -171,60 +177,72 @@ View::~View(){
 void View::draw(){
     _window->clear();
 
-    _backGroundArriere->draw(_window);
-    _backGroundAvant->draw(_window);
-
-    if(_dansMenu) {
+    if(_dansIntro) {
         _logoGraphique->draw(_window);
-        _window->draw(_boutonJouer);
-        _window->draw(_texteJouer);
-        _window->draw(_boutonQuitter);
-        _window->draw(_texteQuitter);
-        _window->draw(_titre);
-    }
-
-    else if(_finJeu) {
-        int temps_restant = TEMPS_GAME_OVER - _tempsFin.asSeconds();
-        _texteFin.setString("           GAME OVER \nRETOUR AU MENU DANS " + to_string(temps_restant) + "...");
-        _window->draw(_texteFin);
-
-        _tempsFin = _horloge.getElapsedTime();
-
-        if(_tempsFin.asSeconds() > TEMPS_GAME_OVER-1) {
-            _finJeu = false;
+        _window->draw(_texteIntro);
+        _tempsIntro += _horloge.getElapsedTime();
+        if(_tempsIntro.asSeconds() > 50) {
             _dansMenu = true;
+            _dansIntro = false;
         }
     }
 
     else {
-        _balleGraphique->draw(_window);
+        _backGroundArriere->draw(_window);
+        _backGroundAvant->draw(_window);
 
-        _window->draw(_cadreBarreVie);
-        _barreVie.setSize(sf::Vector2f(2*_model->getPvBalle(), LARGEUR_BARRE_VIE));
-        _window->draw(_barreVie);
+        if(_dansMenu) {
+            _logoGraphique->draw(_window);
+            _window->draw(_boutonJouer);
+            _window->draw(_texteJouer);
+            _window->draw(_boutonQuitter);
+            _window->draw(_texteQuitter);
+            _window->draw(_titre);
+        }
 
-        _texteScore.setString("SCORE : " + to_string(_model->getScore()));
-        _window->draw(_texteScore);
+        else if(_finJeu) {
+            int temps_restant = TEMPS_GAME_OVER - _tempsFin.asSeconds();
+            _texteFin.setString("           GAME OVER \nRETOUR AU MENU DANS " + to_string(temps_restant) + "...");
+            _window->draw(_texteFin);
 
-        for(auto element : _model->recupererElements()) {
-            if(element->getType() == OBSTACLE_BASE) {
-                _elementGraphique->setTexture(_textureObstacleBase);
+            _tempsFin = _horloge.getElapsedTime();
+
+            if(_tempsFin.asSeconds() > TEMPS_GAME_OVER-1) {
+                _finJeu = false;
+                _dansMenu = true;
             }
-            else if(element->getType() == OBSTACLE_AIR) {
-                _elementGraphique->setTexture(_textureObstacleAir);;
+        }
+
+        else {
+            _balleGraphique->draw(_window);
+
+            _window->draw(_cadreBarreVie);
+            _barreVie.setSize(sf::Vector2f(2*_model->getPvBalle(), LARGEUR_BARRE_VIE));
+            _window->draw(_barreVie);
+
+            _texteScore.setString("SCORE : " + to_string(_model->getScore()));
+            _window->draw(_texteScore);
+
+            for(auto element : _model->recupererElements()) {
+                if(element->getType() == OBSTACLE_BASE) {
+                    _elementGraphique->setTexture(_textureObstacleBase);
+                }
+                else if(element->getType() == OBSTACLE_AIR) {
+                    _elementGraphique->setTexture(_textureObstacleAir);;
+                }
+                else if(element->getType() == OBSTACLE_GRAND) {
+                    _elementGraphique->setTexture(_textureObstacleGrand);
+                }
+                else if(element->getType() == PIECE) {
+                    _elementGraphique->setTexture(_texturePiece);
+                }
+                else if(element->getType() == MEDIKIT) {
+                    _elementGraphique->setTexture(_textureMedikit);
+                }
+                _elementGraphique->resize(element->getW(), element->getH());
+                _elementGraphique->setPosition(element->getX(), element->getY());
+                _elementGraphique->draw(_window);
             }
-            else if(element->getType() == OBSTACLE_GRAND) {
-                _elementGraphique->setTexture(_textureObstacleGrand);
-            }
-            else if(element->getType() == PIECE) {
-                _elementGraphique->setTexture(_texturePiece);
-            }
-            else if(element->getType() == MEDIKIT) {
-                _elementGraphique->setTexture(_textureMedikit);
-            }
-            _elementGraphique->resize(element->getW(), element->getH());
-            _elementGraphique->setPosition(element->getX(), element->getY());
-            _elementGraphique->draw(_window);
         }
     }
     _window->display();

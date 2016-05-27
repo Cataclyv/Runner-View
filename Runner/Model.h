@@ -21,7 +21,7 @@ const int HAUTEUR_JEU = 600;
  * @brief HAUTEUR_SAUT
  * CONSTANTE -> Hauteur jusqu'où la balle va monter lors d'un saut
  */
-const int HAUTEUR_SAUT = HAUTEUR_JEU/3;
+const int HAUTEUR_SAUT = HAUTEUR_JEU/4;
 /**
  * @brief HAUTEUR_SOL
  * CONSTANTE -> Hauteur à laquelle se situe le sol
@@ -62,6 +62,11 @@ const int ECART_BORNE = 300;
  * CONSTANTE -> Ecart minimum entre deux éléments
  */
 const int ECART_MIN = 10;
+/**
+ * @brief HAUTEUR_ELEMENTS_AERIENS
+ * CONSTANTE -> Hauteur à laquelle les éléments aériens sont placés
+ */
+const int HAUTEUR_ELEMENTS_AERIENS = HAUTEUR_SOL-3*TAILLE_ELEMENTS;
 
 const std::string OBSTACLE_BASE = "ObstacleBase";
 const std::string OBSTACLE_AIR = "ObstacleAir";

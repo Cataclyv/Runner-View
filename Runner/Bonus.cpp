@@ -2,8 +2,8 @@
 
 using namespace std;
 
-Bonus::Bonus(int x, int taille, int vitesse, string type) :
-    MovableElement(x, 300, taille, taille, -vitesse, 0), _type{type}
+Bonus::Bonus(int x, int y, int taille, int vitesse, string type) :
+    MovableElement(x, y, taille, taille, -vitesse, 0), _type{type}
 {}
 
 void Bonus::move() {

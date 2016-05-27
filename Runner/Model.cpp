@@ -42,7 +42,7 @@ void Model::ajouterElementAleatoire(int xCourant)
             _elements.insert(nouvelElement);
         }
         else if(determination_obstacle < 90) {
-            nouvelElement = new Obstacle(xCourant, HAUTEUR_SOL-3*TAILLE_ELEMENTS, TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0, OBSTACLE_AIR);
+            nouvelElement = new Obstacle(xCourant, HAUTEUR_ELEMENTS_AERIENS, TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0, OBSTACLE_AIR);
             _elements.insert(nouvelElement);
         }
         else {
@@ -54,11 +54,11 @@ void Model::ajouterElementAleatoire(int xCourant)
         int determination_bonus = rand()%100;
 
         if(determination_bonus < 90) {
-            nouvelElement = new Bonus(xCourant,TAILLE_ELEMENTS, _vitesseJeu, PIECE);
+            nouvelElement = new Bonus(xCourant,HAUTEUR_ELEMENTS_AERIENS, TAILLE_ELEMENTS, _vitesseJeu, PIECE);
             _elements.insert(nouvelElement);
         }
         else {
-            nouvelElement = new Bonus(xCourant,TAILLE_ELEMENTS, _vitesseJeu, MEDIKIT);
+            nouvelElement = new Bonus(xCourant,HAUTEUR_ELEMENTS_AERIENS, TAILLE_ELEMENTS, _vitesseJeu, MEDIKIT);
             _elements.insert(nouvelElement);
         }
     }
@@ -151,7 +151,7 @@ void Model::deplacerBalle(bool aGauche) {
         _balle->setDx(-VITESSE_BALLE);
     else if(!aGauche && !_balle->getEnSaut())
         _balle->setDx(VITESSE_BALLE);
-    _balle->move();
+    _balle->move(LARGEUR_JEU);
 }
 
 int Model::getBalleX() const
@@ -235,7 +235,7 @@ void Model::gestionSautBalle()
             }
         }
     }
-    _balle->move();
+    _balle->move(LARGEUR_JEU);
 }
 
 void Model::setPvBalle(int pv)

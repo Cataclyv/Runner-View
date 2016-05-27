@@ -5,8 +5,6 @@
 #include <string>
 #include "MovableElement.h"
 
-const int TAILLE = 40;
-
 class Bonus : public MovableElement
 {
 private:
@@ -19,11 +17,12 @@ public:
     /**
      * @brief Bonus
      * @param x
+     * @param y
      * @param taille
      * @param vitesse
      * @param type
      */
-    Bonus(int x, int taille, int vitesse, std::string type);
+    Bonus(int x, int y, int taille, int vitesse, std::string type);
 
     /**
      * @brief move

@@ -1,15 +1,14 @@
 #include "Balle.h"
 
 Balle::Balle(int hauteur)
-    : MovableElement{10, 0, W_BALLE, H_BALLE, 0, 0}, _pv{PV_MAX}, _enSaut{false}, _enChute{false}
+    : MovableElement{0, hauteur-W_BALLE, W_BALLE, H_BALLE, 0, 0}, _pv{PV_MAX}, _enSaut{false}, _enChute{false}
 {
-    _y = hauteur-_w;
 }
 
-void Balle::move()
+void Balle::move(int xMax)
 {
     bool deplacable = true;
-    if((_x-_dx < 20 && _dx < 0) || (_x+_dx > 800-_w && _dx > 0))
+    if((_x-_dx < 0 && _dx < 0) || (_x+_dx > xMax-_w && _dx > 0))
         deplacable = false;
     if(deplacable)
         _x += _dx;

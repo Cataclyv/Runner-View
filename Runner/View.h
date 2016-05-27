@@ -37,7 +37,15 @@ const std::string IMG_MEDIKIT = "images/medikit.png";
 class View
 {
 private :
+    /**
+     * @brief _w
+     * Largeur de la vue, égale à la largeur de l'espace de jeu
+     */
     int _w;
+    /**
+     * @brief _h
+     * Hauteur de la vue, égale à la hauteur de l'espace de jeu
+     */
     int _h;
     /**
      * @brief _window
@@ -50,7 +58,6 @@ private :
      */
     Model *_model;
 
-    /*** BOOLEENS ***/
     /**
      * @brief _dansMenu
      * Détermine si le menu doit être affiché et utilisé
@@ -66,6 +73,12 @@ private :
      * Détermine si le modèle doit être réinitialisé
      */
     bool _reinit;
+
+    /**
+     * @brief _dansIntro
+     * Détermine si le jeu affiche l'écran d'introduction
+     */
+    bool _dansIntro;
 
     /*** TEXTURES ***/
     sf::Texture _textureLogo;
@@ -90,6 +103,7 @@ private :
     sf::Text _texteQuitter;
     sf::Text _texteFin;
     sf::Text _titre;
+    sf::Text _texteIntro;
 
     /*** ELEMENTS GRAPHIQUES ***/
     SlidingBackground *_backGroundAvant, *_backGroundArriere;
@@ -115,6 +129,12 @@ private :
      * Utilisé pour gérer l'incrémentation du score avec le temps
      */
     sf::Time _tempsScore;
+
+    /**
+     * @brief _tempsIntro
+     * Gère le temps de l'écran d'introduction
+     */
+    sf::Time _tempsIntro;
 
 public:
     /**

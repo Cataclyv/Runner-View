@@ -3,8 +3,20 @@
 
 #include "MovableElement.h"
 
+/**
+ * @brief W_BALLE
+ * CONSTANTE -> Largeur de la balle
+ */
 const int W_BALLE = 50;
-const int H_BALLE = 50;
+/**
+ * @brief H_BALLE
+ * CONSTANTE -> Hauteur de ma balle (ici initialisée à W_BALLE pour obtenir une hitbox carrée
+ */
+const int H_BALLE = W_BALLE;
+/**
+ * @brief PV_MAX
+ * Points de vie maximum que la balle peut avoir
+ */
 const int PV_MAX = 100;
 
 class Balle : public MovableElement
@@ -36,9 +48,10 @@ public:
 
     /**
      * @brief move
-     * Déplace la balle selon son dx et sont dy
+     * @param xMax
+     * Déplace la balle selon son dx et son dy ; la coordonnée X sera toujours comprise entre 0 et xMax
      */
-    void move() override;
+    void move(int xMax);
 
     /**
      * @brief getPv

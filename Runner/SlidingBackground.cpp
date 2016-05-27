@@ -5,14 +5,14 @@ SlidingBackground::SlidingBackground(sf::Texture &image, int w, int h, unsigned 
 {
     /*** Redimensionne l'image à gauche ***/
     sf::FloatRect frG = _gauche.getLocalBounds();
-    float width_factor_G = 800/frG.width;
-    float height_factor_G = 600/frG.height;
+    float width_factor_G = w/frG.width;
+    float height_factor_G = h/frG.height;
     _gauche.setScale(width_factor_G, height_factor_G);
 
     /*** Redimensionne l'image à droite ***/
     sf::FloatRect frD = _droite.getLocalBounds();
-    float width_factor_D = 800/frD.width;
-    float height_factor_D = 600/frD.height;
+    float width_factor_D = w/frD.width;
+    float height_factor_D = h/frD.height;
     _droite.setScale(width_factor_D, height_factor_D);
 }
 

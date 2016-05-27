@@ -93,10 +93,10 @@ private :
 
     /*** TEXTES ***/
     /**
-     * @brief _font
+     * @brief _police
      * Police d'écriture utilisée pour les textes
      */
-    sf::Font _font;
+    sf::Font _police;
     sf::Text _texteScore;
     sf::Text _textePv;
     sf::Text _texteJouer;

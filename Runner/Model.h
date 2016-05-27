@@ -11,7 +11,7 @@
  * @brief LARGEUR_JEU
  * CONSTANTE -> Largeur de l'espace de jeu, attribuée au modèle
  */
-const int LARGEUR_JEU = 800;
+const int LARGEUR_JEU = 1200;
 /**
  * @brief HAUTEUR_JEU
  * CONSTANTE -> Hauteur de l'espace de jeu, attribuée au modèle
@@ -46,7 +46,7 @@ const int VITESSE_INITIALE_JEU = 3;
  * @brief COEFF_GRAVITE
  * CONSTANTE -> Utilisé pour la vitesse de saut
  */
-const int COEFF_GRAVITE = 3;
+const int COEFF_GRAVITE = 5;
 /**
  * @brief MAX_ELEMENTS
  * CONSTANTE -> Nombre constant d'éléments présents simultanément à la génération du modèle et pendant le jeu
@@ -61,12 +61,42 @@ const int ECART_BORNE = 300;
  * @brief ECART_MIN
  * CONSTANTE -> Ecart minimum entre deux éléments
  */
-const int ECART_MIN = 10;
+const int ECART_MIN = 20;
 /**
  * @brief HAUTEUR_ELEMENTS_AERIENS
  * CONSTANTE -> Hauteur à laquelle les éléments aériens sont placés
  */
 const int HAUTEUR_ELEMENTS_AERIENS = HAUTEUR_SOL-3*TAILLE_ELEMENTS;
+/**
+ * @brief DEGATS_INITIAUX
+ * CONSTANTE -> Dégâts des obstacles au début d'une partie
+ */
+const int DEGATS_INITIAUX = 10;
+/**
+ * @brief SOINS_INITIAUX
+ * CONSTANTE -> Points de vie rendus par les médikits au début d'une partie
+ */
+const int SOINS_INITIAUX = 50;
+/**
+ * @brief CAP_OBSTACLE
+ * CONSTANTE -> Utilisée dans la déterminisation d'un nouvel élément
+ */
+const int CAP_OBSTACLE = 60;
+/**
+ * @brief CAP_BASE
+ * CONSTANTE -> Utilisée dans la déterminisation d'un nouvel obstacle
+ */
+const int CAP_BASE = 70;
+/**
+ * @brief CAP_AERIEN
+ * CONSTANTE -> Utilisée dans la déterminisation d'un nouvel obstacle
+ */
+const int CAP_AERIEN = 90;
+/**
+ * @brief CAP_PIECE
+ * CONSTANTE -> Utilisée dans la déterminisation d'un nouveau bonus
+ */
+const int CAP_PIECE = 90;
 
 const std::string OBSTACLE_BASE = "ObstacleBase";
 const std::string OBSTACLE_AIR = "ObstacleAir";

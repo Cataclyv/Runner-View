@@ -12,7 +12,7 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
     _tempsIntro = _horloge.restart();
 
     /*** CREATION FONT ***/
-    if(!_font.loadFromFile(FONT))
+    if(!_police.loadFromFile(FONT))
         policeErreur(FONT);
     else {
         policeTrouvee(FONT);
@@ -95,7 +95,7 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
 
 
     /*** CREATION TEXTE -> SCORE ***/
-    _texteScore.setFont(_font);
+    _texteScore.setFont(_police);
     _texteScore.setString("SCORE : " + to_string(_model->getScore()));
     _texteScore.setPosition(_barreVie.getPosition().x, _barreVie.getPosition().y + 20);
     bb = _texteScore.getLocalBounds();
@@ -103,9 +103,9 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
     _texteScore.setColor(sf::Color::Black);
 
     /*** CREATION TEXTE -> GAME OVER ***/
-    _texteFin.setFont(_font);
-    _texteFin.setString("GAME OVER \nRETOUR AU MENU DANS 5...");
-    _texteFin.setPosition(sf::Vector2f(250, 250));
+    _texteFin.setFont(_police);
+    _texteFin.setString("GAME OVER - RETOUR AU MENU DANS 5...");
+    _texteFin.setPosition(350, 250);
     _texteFin.setColor(sf::Color::Black);
 
     /* ************ *
@@ -121,15 +121,15 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
     }
 
     /*** TITRE DU JEU ***/
-    _titre.setFont(_font);
+    _titre.setFont(_police);
     _titre.setString("RUNNER");
-    _titre.setPosition(_logoGraphique->getPosition().x+_logoGraphique->getTextureRect().width+150, 5);
     bb = _titre.getLocalBounds();
     _titre.setScale(LARGEUR_BOUTON/bb.width, HAUTEUR_BOUTON/bb.height);
+    _titre.setPosition((LARGEUR_JEU/2)-_titre.getLocalBounds().width, 5);
     _titre.setColor(sf::Color::Black);
 
     /*** CREATION BOUTONS ***/
-    _texteJouer.setFont(_font);
+    _texteJouer.setFont(_police);
     _texteJouer.setString("JOUER");
     _texteJouer.setPosition(sf::Vector2f(_titre.getPosition().x, HAUTEUR_JEU/3));
     bb = _texteJouer.getGlobalBounds();
@@ -141,9 +141,9 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
     _boutonJouer.setOutlineThickness(2);
     _boutonJouer.setOutlineColor(sf::Color::Black);
 
-    _texteQuitter.setFont(_font);
+    _texteQuitter.setFont(_police);
     _texteQuitter.setString("QUITTER");
-    _texteQuitter.setPosition(sf::Vector2f(_boutonJouer.getPosition().x, _boutonJouer.getPosition().y+_boutonJouer.getGlobalBounds().height + DECALAGE_BOUTONS));
+    _texteQuitter.setPosition(sf::Vector2f(_boutonJouer.getPosition().x, _boutonJouer.getPosition().y+_boutonJouer.getLocalBounds().height + DECALAGE_BOUTONS));
     bb = _texteQuitter.getGlobalBounds();
     _texteQuitter.setScale(LARGEUR_BOUTON/bb.width, HAUTEUR_BOUTON/bb.height);
     _texteQuitter.setColor(sf::Color::Black);
@@ -154,9 +154,9 @@ View::View(Model *model) : _w{LARGEUR_JEU}, _h{HAUTEUR_JEU}, _model{model}, _dan
     _boutonQuitter.setOutlineColor(sf::Color::Black);
 
     /*** TEXTE INTRODUCTION ***/
-    _texteIntro.setFont(_font);
+    _texteIntro.setFont(_police);
     _texteIntro.setString("Jules Despret et Romain Cremery presentent...");
-    _texteIntro.setPosition(LARGEUR_JEU/11, HAUTEUR_JEU/2);
+    _texteIntro.setPosition(300, HAUTEUR_JEU/2);
 }
 
 View::~View(){
@@ -202,7 +202,7 @@ void View::draw(){
 
         else if(_finJeu) {
             int temps_restant = TEMPS_GAME_OVER - _tempsFin.asSeconds();
-            _texteFin.setString("           GAME OVER \nRETOUR AU MENU DANS " + to_string(temps_restant) + "...");
+            _texteFin.setString("GAME OVER - RETOUR AU MENU DANS " + to_string(temps_restant) + "...");
             _window->draw(_texteFin);
 
             _tempsFin = _horloge.getElapsedTime();
@@ -299,6 +299,7 @@ bool View::treatEvents(){
             if(!_reinit) {
                 _model = new Model();
                 _tempsFin = _horloge.restart();
+                _reinit = true;
             }
         }
     }
@@ -309,7 +310,7 @@ void View::synchronize()
 {
     _balleGraphique->setPosition(_model->getBalleX(), _model->getBalleY());
     _tempsScore += _horloge.getElapsedTime();
-    if(_tempsScore.asSeconds() > 10) {
+    if(_tempsScore.asSeconds() > 10 && !_dansIntro && !_dansMenu) {
         _model->ajouterTempsAuScore();
         _tempsScore = _horloge.restart();
     }

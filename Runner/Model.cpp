@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Model::Model() : _ecart{50}, _vitesseJeu{VITESSE_INITIALE_JEU}, _w{LARGEUR_JEU}, _h {HAUTEUR_JEU}, _degatsObstacle{25}, _soins{25} {
+Model::Model() : _ecart{50}, _vitesseJeu{VITESSE_INITIALE_JEU}, _w{LARGEUR_JEU}, _h {HAUTEUR_JEU}, _degatsObstacle{DEGATS_INITIAUX}, _soins{SOINS_INITIAUX} {
     _balle = new Balle(HAUTEUR_SOL);
     if(VERBOSE)
         cout << "Balle crée aux coordonnées (" << _balle->getX() << ", " << _balle->getY() << ")" << endl << endl;
@@ -32,39 +32,37 @@ void Model::calculerEcart()
 
 void Model::ajouterElementAleatoire(int xCourant)
 {
-    MovableElement *nouvelElement;
+    MovableElement *nouvelElement = nullptr;
     int determination_element = rand()%100;
 
-    if(determination_element < 60) {
+    if(determination_element < CAP_OBSTACLE) {
         int determination_obstacle = rand()%100;
-        if(determination_obstacle < 70) {
+        if(determination_obstacle < CAP_BASE) {
             nouvelElement = new Obstacle(xCourant, HAUTEUR_SOL-TAILLE_ELEMENTS, TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0, OBSTACLE_BASE);
-            _elements.insert(nouvelElement);
         }
-        else if(determination_obstacle < 90) {
+        else if(determination_obstacle < CAP_AERIEN) {
             nouvelElement = new Obstacle(xCourant, HAUTEUR_ELEMENTS_AERIENS, TAILLE_ELEMENTS, TAILLE_ELEMENTS, -_vitesseJeu, 0, OBSTACLE_AIR);
-            _elements.insert(nouvelElement);
         }
         else {
             nouvelElement = new Obstacle(xCourant, HAUTEUR_SOL-2*TAILLE_ELEMENTS, 2*TAILLE_ELEMENTS, 2*TAILLE_ELEMENTS, -_vitesseJeu, 0, OBSTACLE_GRAND);
-            _elements.insert(nouvelElement);
         }
     }
     else {
         int determination_bonus = rand()%100;
 
-        if(determination_bonus < 90) {
+        if(determination_bonus < CAP_PIECE) {
             nouvelElement = new Bonus(xCourant,HAUTEUR_ELEMENTS_AERIENS, TAILLE_ELEMENTS, _vitesseJeu, PIECE);
-            _elements.insert(nouvelElement);
         }
         else {
             nouvelElement = new Bonus(xCourant,HAUTEUR_ELEMENTS_AERIENS, TAILLE_ELEMENTS, _vitesseJeu, MEDIKIT);
-            _elements.insert(nouvelElement);
         }
     }
+    if(nouvelElement != nullptr)
+        _elements.insert(nouvelElement);
     if(VERBOSE)
         nouvelElement->verbose();
 }
+
     // Quand le jeu sera Game Over, retourne FALSE
 bool Model::nextStep() {
     bool continuer = true;
